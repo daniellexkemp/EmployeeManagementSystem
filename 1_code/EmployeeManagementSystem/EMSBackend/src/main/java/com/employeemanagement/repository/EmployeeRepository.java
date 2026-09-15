@@ -5,10 +5,7 @@
 package com.employeemanagement.repository;
 import com.employeemanagement.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
-/**
- *
- * @author NerdyGirl44
- */
+
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     
 }

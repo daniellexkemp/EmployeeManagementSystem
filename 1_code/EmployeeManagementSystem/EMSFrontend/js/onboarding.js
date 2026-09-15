@@ -1,0 +1,1 @@
+// Danielle: New hire setup logic (UC-5)

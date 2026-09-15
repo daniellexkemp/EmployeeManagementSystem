@@ -8,10 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-/**
- *
- * @author NerdyGirl44
- */
+
 @Entity
 public class Employee {
 @Id
