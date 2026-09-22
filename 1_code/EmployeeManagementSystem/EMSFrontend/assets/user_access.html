@@ -1,1 +1,27 @@
 <!-- Danielle: Manage User Access and Roles screen (UC-7) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR - User Access</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>User Access & Department Assignment</h1>
+    <p>Assign baseline department/status permissions to employee records.</p>
+    <select id="employeeSelect"></select>
+    <select id="roleSelect">
+        <option value="ACTIVE">Standard Employee</option>
+        <option value="HR_ADMIN">HR Admin</option>
+        <option value="MANAGER">Manager</option>
+    </select>
+    <button id="assignBtn">Update Access Status</button>
+    <p id="accessFeedback"></p>
+    <a href="employees.html">Back to Directory</a>
+</div>
+<script src="api.js"></script>
+<script src="user_access.js"></script>
+</body>
+</html>

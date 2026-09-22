@@ -6,17 +6,14 @@ package com.employeemanagement.controller;
 
 import com.employeemanagement.model.Employee;
 import com.employeemanagement.service.EmployeeService;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*") // Allows EMSFrontend to make HTTP requests to this controller
 @RequestMapping("/api/employees")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -25,14 +22,38 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @GetMapping
+    public List<Employee> getAll(@RequestParam(required = false) String search) {
+        return employeeService.searchEmployees(search);
+    }
+
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeService.getEmployeeById(id).orElse(null);
+    public ResponseEntity<Employee> getById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Employee create(@RequestBody Employee employee) {
+        return employeeService.createEmployee(employee);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        employee.setId(id);
-        return employeeService.updateEmployee(employee);
+    public ResponseEntity<Employee> update(@PathVariable Long id, @RequestBody Employee employee) {
+        try {
+            return ResponseEntity.ok(employeeService.updateEmployee(id, employee));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<Employee> deactivate(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(employeeService.deactivateEmployee(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
