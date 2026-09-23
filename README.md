@@ -41,5 +41,4 @@ Payroll processing, tax calculations, employee benefits administration, and inte
 
 ## Project Status
 
-Assignment 3 – System Architecture and Behavioral Design
-Began work on time-off request feature
+Assignment 4 – Working System Skeleton
