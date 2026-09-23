@@ -1,1 +1,70 @@
 <!-- Stephen: Review Pending Time-Off screen (UC-4) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Approvals</title>
+<link rel="stylesheet" href="../css/manager_approvals.css">
+</head>
+<body>
+<div class="header">
+  <strong>Employee Management System</strong>
+  <span id="currentUser"></span>
+</div>
+<nav>
+  <a href="index.html">Dashboard</a>
+  <a href="employees.html">Employee Directory</a>
+  <a href="timeoff_employee.html">Time-Off Requests</a>
+  <a href="manager_approvals.html" class="active">Manager Approvals</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="user_access.html">User Access</a>
+</nav>
+<main>
+  <h2>MANAGER APPROVALS</h2>
+  <div id="statusMessage" style="display:none;"></div>
+  <div class="filters">
+    <select id="statusFilter">
+      <option value="PENDING" selected>Pending</option>
+      <option value="APPROVED">Approved</option>
+      <option value="DENIED">Denied</option>
+      <option value="ALL">All</option>
+    </select>
+    <button id="refreshBtn">Refresh</button>
+  </div>
+  <table id="requestsTable">
+    <thead>
+      <tr>
+        <th>Request ID</th>
+        <th>Employee</th>
+        <th>Leave Type</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="requestsBody"></tbody>
+  </table>
+  <p id="emptyMessage" style="display:none;">No requests to display.</p>
+  <div id="detailPanel" style="display:none;">
+    <h3>Request Detail</h3>
+    <p><strong>Request ID:</strong> <span id="detailId"></span></p>
+    <p><strong>Employee:</strong> <span id="detailEmployee"></span></p>
+    <p><strong>Leave Type:</strong> <span id="detailLeaveType"></span></p>
+    <p><strong>Dates:</strong> <span id="detailDates"></span></p>
+    <p><strong>Days:</strong> <span id="detailDays"></span></p>
+    <p><strong>Reason:</strong> <span id="detailReason"></span></p>
+    <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+    <label for="decisionNote">Decision note (optional)</label>
+    <textarea id="decisionNote" rows="3"></textarea>
+    <button id="approveBtn">Approve</button>
+    <button id="denyBtn">Deny</button>
+    <button id="closeDetailBtn">Close</button>
+  </div>
+</main>
+<script src="../js/api.js"></script>
+<script src="../js/manager_approvals.js"></script>
+</body>
+</html>
