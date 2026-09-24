@@ -1,1 +1,30 @@
-<!-- Danielle: HR Employee Directory screen (UC-1)
+<!-- Danielle: HR Employee Directory screen (UC-1) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR - Employee Records</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Records & Search</h1>
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search by name, email, department...">
+            <button id="searchBtn">Search</button>
+            <a href="onboarding.html"><button>+ New Onboarding</button></a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Name</th><th>Email</th><th>Dept</th><th>Status</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody"></tbody>
+        </table>
+    </div>
+    <script src="api.js"></script>
+    <script src="employees.js"></script>
+</body>
+</html>
