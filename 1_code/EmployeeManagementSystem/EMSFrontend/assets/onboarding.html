@@ -1,1 +1,28 @@
 <!-- Danielle: Maintain Onboarding Records screen (UC-5) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR - Onboard Employee</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Create Employee Record (Onboarding)</h1>
+    <form id="onboardingForm">
+        <input type="text" id="firstName" placeholder="First Name" required>
+        <input type="text" id="lastName" placeholder="Last Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Phone">
+        <input type="text" id="department" placeholder="Department">
+        <input type="text" id="jobTitle" placeholder="Job Title">
+        <button type="submit">Complete Onboarding</button>
+    </form>
+    <p id="feedback"></p>
+    <a href="employees.html">Back to Employee Directory</a>
+</div>
+<script src="api.js"></script>
+<script src="onboarding.js"></script>
+</body>
+</html>
