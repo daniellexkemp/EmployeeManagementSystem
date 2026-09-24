@@ -1,1 +1,83 @@
 <!-- Nathaniel: Submit & Track Time-Off Request screen (UC-3) -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time-Off Requests</title>
+<link rel="stylesheet" href="../css/timeoff_employee.css">
+</head>
+<body>
+
+<div class="header">
+  <strong>Employee Management System</strong>
+  <span id="currentUser"></span>
+</div>
+
+<nav>
+  <a href="index.html">Dashboard</a>
+  <a href="employees.html">Employee Directory</a>
+  <a href="timeoff_employee.html" class="active">Time-Off Requests</a>
+  <a href="manager_approvals.html">Manager Approvals</a>
+  <a href="onboarding.html">Onboarding</a>
+  <a href="user_access.html">User Access</a>
+</nav>
+
+<main>
+
+  <h2>TIME-OFF REQUESTS</h2>
+
+  <div id="statusMessage" style="display:none;"></div>
+
+  <div class="request-form">
+    <h3>Request Time Off</h3>
+
+    <label for="leaveType">Leave Type</label>
+    <select id="leaveType">
+      <option value="">Select Leave Type</option>
+      <option value="VACATION">Vacation</option>
+      <option value="SICK">Sick</option>
+      <option value="PERSONAL">Personal</option>
+    </select>
+
+    <label for="startDate">Start Date</label>
+    <input type="date" id="startDate">
+
+    <label for="endDate">End Date</label>
+    <input type="date" id="endDate">
+
+    <label for="reason">Reason (optional)</label>
+    <textarea id="reason" rows="3"></textarea>
+
+    <button id="submitRequestBtn">Submit Request</button>
+  </div>
+
+  <div class="request-history">
+    <h3>My Time-Off Requests</h3>
+
+    <button id="refreshBtn">Refresh</button>
+
+    <table id="requestsTable">
+      <thead>
+        <tr>
+          <th>Request ID</th>
+          <th>Leave Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Days</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="requestsBody"></tbody>
+    </table>
+
+    <p id="emptyMessage" style="display:none;">No time-off requests to display.</p>
+  </div>
+
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/timeoff_employee.js"></script>
+
+</body>
+</html>
