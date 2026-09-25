@@ -45,7 +45,8 @@ Assignment 3 – System Architecture and Behavioral Design
 Pushed employee time-off request feature to a seperate branch
 
 
-## Skeleton Setup Instructions
+# Skeleton Setup Instructions
+
 
 ### Required software
 
@@ -59,8 +60,8 @@ Pushed employee time-off request feature to a seperate branch
 
 ### Database configuration
 
-1. Start MySQL and note the host, port, and an account the application can use.
-2. Create a database user for the application. The schema **ems_db** is created automatically on first start if the user has the global **CREATE** privilege. Otherwise create it first:
+1. Start MySQL and note the host, chosen port, and an account the application can use.
+2. Create a database user for the application. The schema **ems_db** is created automatically on first start if the user has the global **CREATE** privilege. Otherwise, you can create it first:
 
    ```sql
    CREATE DATABASE IF NOT EXISTS ems_db;
