@@ -1,1 +1,0 @@
-// Login modal toggle, credential submission, and logout logic
