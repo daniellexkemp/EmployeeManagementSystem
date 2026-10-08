@@ -1,0 +1,80 @@
+<!-- Danielle: HR Employee Directory screen (UC-1) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--------------- Document Metadata & Stylesheet Link --------------->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - Employee Records</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--------------- Top Header Bar --------------->
+<div class="header">
+    <strong>Employee Management System</strong>
+    <span id="currentUser"></span>
+</div>
+
+<!--------------- Global Navigation Bar --------------->
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html" class="active">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="onboarding.html">Onboarding</a>
+    <a href="user_access.html">User Access</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<!--------------- Main Content Area --------------->
+<main>
+    <div class="container">
+        <h1>EMPLOYEE DIRECTORY</h1>
+
+        <!-------------- - Search Controls, Filters & Action Buttons ------------- -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Search by name or email...">
+
+            <!---------------  Department Dropdown -------------- -->
+            <select id="departmentFilter">
+                <option value="">All Departments</option>
+            </select>
+
+            <!-- -------------  Status Dropdown ------------- -->
+            <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+            </select>
+
+            <button id="searchBtn">Filter</button>
+            <a href="onboarding.html"><button>+ Add New Employee</button></a>
+        </div>
+
+        <!--------------- Employee Data Table --------------->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Dept</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+            <!--------------- Dynamic employee rows will be injected here via JavaScript --------------->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!--------------- Page-Specific JavaScript Files --------------->
+<script src="/js/api.js"></script>
+<script src="/js/employee.js"></script>
+
+</body>
+</html>

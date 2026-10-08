@@ -1,0 +1,87 @@
+<!-- Danielle: Maintain Onboarding Records screen (UC-5) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--------------- Document Metadata & Stylesheet Link --------------->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - Onboard Employee</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--------------- Top Header Bar --------------->
+<div class="header">
+    <strong>Employee Management System</strong>
+</div>
+
+<!--------------- Global Navigation Bar --------------->
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="onboarding.html" class="active">Onboarding</a>
+    <a href="user_access.html">User Access</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<!--------------- Main Content Area --------------->
+<main>
+    <h2>CREATE EMPLOYEE RECORD</h2>
+
+    <!--------------- New Employee Onboarding Form --------------->
+    <form id="onboardingForm">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName"
+                   name="firstName" placeholder="First Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName"
+                   name="lastName" placeholder="Last Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email"
+                   name="email" placeholder="Email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone"
+                   name="phone" placeholder="Phone">
+        </div>
+
+        <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" id="department"
+                   name="department" placeholder="Department">
+        </div>
+
+        <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle"
+                   name="jobTitle" placeholder="Job Title">
+        </div>
+
+        <button type="submit">Complete Onboarding</button>
+    </form>
+
+    <!--------------- Feedback Notification Display --------------->
+    <p id="feedback"></p>
+
+    <!--------------- Return Link to Directory --------------->
+    <p style="margin-top: 16px;"><a href="employees.html">Back to Employee Directory</a></p>
+</main>
+
+<!--------------- Page-Specific JavaScript Files --------------->
+<script src="/js/api.js"></script>
+<script src="/js/onboarding.js"></script>
+
+</body>
+</html>

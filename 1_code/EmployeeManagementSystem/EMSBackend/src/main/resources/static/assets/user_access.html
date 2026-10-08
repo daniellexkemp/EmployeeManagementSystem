@@ -1,0 +1,58 @@
+<!-- Danielle: Manage User Access and Roles screen (UC-7) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--------------- Document Metadata & Stylesheet Link --------------->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - User Access</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--------------- Top Header Bar --------------->
+<div class="header">
+    <strong>Employee Management System</strong>
+    <span id="currentUser"></span>
+</div>
+<!--------------- Global Navigation Bar --------------->
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="onboarding.html">Onboarding</a>
+    <a href="user_access.html" class="active">User Access</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<!--------------- Main Content Area --------------->
+<main>
+    <div class="container">
+        <h2>MANAGE USER ACCESS</h2>
+        <p style="margin-bottom: 16px; font-size: 14px; color: #666;">Assign department/status permissions to employee.</p>
+
+        <!--------------- User Access Form Controls --------------->
+        <div class="form-group">
+            <select id="employeeSelect"></select>
+            <select id="roleSelect">
+                <option value="ACTIVE">Standard Employee</option>
+                <option value="HR_ADMIN">HR Admin</option>
+                <option value="MANAGER">Manager</option>
+            </select>
+            <button id="assignBtn">Update Access Status</button>
+        </div>
+
+        <!--------------- Feedback & Navigation Return Link --------------->
+        <p id="accessFeedback"></p>
+        <p style="margin-top: 16px;"><a href="employees.html">Back to Directory</a></p>
+    </div>
+</main>
+
+<!--------------- Page-Specific JavaScript Files --------------->
+<script src="/js/api.js"></script>
+<script src="/js/user_access.js"></script>
+
+</body>
+</html>
