@@ -29,7 +29,7 @@ window.EmployeeAPI = {
         return apiRequest(`/employees${query}`, 'GET');
     },
     getById: (id) => apiRequest(`/employees/${id}`, 'GET'),
-    create: (data) => apiRequest('/employee', 'POST', data),
+    create: (data) => apiRequest('/employees', 'POST', data),
     update: (id, data) => apiRequest(`/employees/${id}`, 'PUT', data),
     deactivate: (id) => apiRequest(`/employees/${id}/deactivate`, 'PATCH')
 };
