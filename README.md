@@ -114,7 +114,7 @@ The API listens on port 8080. You can confirm it is up by going to **http://loca
 
 With the back end running:
 
-- For now open the pages directly from the file system, for example `EMSFrontend/assets/onboarding.html`
+- For now open the pages directly from the file system, for example `static/assets/onboarding.html`
 
 
 Screens: onboarding.html (create employee), employees.html (employee directory), profile.html, timeoff_employee.html, manager_approvals.html, user_access.html.
