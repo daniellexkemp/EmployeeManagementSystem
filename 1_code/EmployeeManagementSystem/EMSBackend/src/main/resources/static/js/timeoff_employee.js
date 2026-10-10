@@ -6,7 +6,7 @@ const CURRENT_EMPLOYEE_ID = 1;
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    document.getElementById("currentUser").textContent = "Employee Test";
+    document.getElementById("currentUser").textContent = "Employee Undefined";
 
     document.getElementById("submitRequestBtn")
         .addEventListener("click", submitRequest);
