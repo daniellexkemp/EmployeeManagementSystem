@@ -1,3 +1,45 @@
 <!--
 Landing page containing the (optional??) Login Modal overlay
 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--------------- Document Metadata & Stylesheet Link --------------->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System - Home</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--------------- Top Header Bar --------------->
+<div class="header">
+    <strong>Employee Management System</strong>
+    <span id="currentUser"></span>
+</div>
+
+<!--------------- Global Navigation Bar --------------->
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html" class="active">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="onboarding.html">Onboarding</a>
+    <a href="user_access.html">User Access</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<!--------------- Main Content Area --------------->
+<main>
+    <div class="container">
+        <h1>EMPLOYEE DASHBOARD</h1>
+    </div>
+</main>
+
+<!--------------- Page-Specific JavaScript Files --------------->
+<script src="/js/api.js"></script>
+<script src="/js/employee.js"></script>
+
+</body>
+</html>
