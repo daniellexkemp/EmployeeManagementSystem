@@ -1,8 +1,6 @@
 // Stephen: Manager review and decision logic (UC-4)
 // manager_approvals.js - Manager Approvals screen.
 
-
-
 var MOCK_REQUESTS = [
   { id: 1, employeeId: 10, employeeName: 'Alice Johnson', leaveType: 'VACATION',
     startDate: '2026-10-05', endDate: '2026-10-09', daysRequested: 5,
@@ -28,7 +26,15 @@ var MOCK_REQUESTS = [
     decisionNote: 'Two others already off that week.' }
 ];
 
+// Set USE_MOCK to true to work without the backend (uses MOCK_REQUESTS above).
+var USE_MOCK = false;
+
 var selectedRequestId = null;
+
+function currentManagerId() {
+  var user = getCurrentUser();
+  return user ? user.employeeId : null;
+}
 
 
 
@@ -61,14 +67,14 @@ function decide(id, note, newStatus, path) {
       return Promise.resolve(null);
     }
     request.status = newStatus;
-    request.decidedBy = CURRENT_MANAGER_ID;
+    request.decidedBy = currentManagerId();
     request.decidedAt = new Date().toISOString().slice(0, 19);
     request.decisionNote = note;
     return Promise.resolve(request);
   }
   // The back end records the audit-log entry for this decision.
   return apiRequest('/approvals/' + id + path, 'PUT',
-    { decidedBy: CURRENT_MANAGER_ID, decisionNote: note });
+    { decidedBy: currentManagerId(), decisionNote: note });
 }
 
 function findMockRequest(id) {
@@ -201,7 +207,14 @@ function handleDecision(decideFunction, verb) {
 
 
 function init() {
-  document.getElementById('currentUser').textContent = CURRENT_MANAGER_NAME;
+  if (!requireAuth()) return;
+  displayCurrentUser();
+  if (!hasRole('MANAGER', 'HR_ADMIN')) {
+    document.getElementById('requestsTable').style.display = 'none';
+    document.getElementById('emptyMessage').style.display = 'block';
+    document.getElementById('emptyMessage').textContent = 'Only managers can view approvals.';
+    return;
+  }
 
   document.getElementById('refreshBtn').addEventListener('click', loadRequests);
   document.getElementById('statusFilter').addEventListener('change', loadRequests);

@@ -1,14 +1,23 @@
 // Susan: Employee self-service edit logic (UC-2)
 
-// Temporary employee ID for testing.
-// Authentication will determine the logged-in employee in a later version.
-const employeeId = 1;
-
+let employeeId = null;
 let originalEmployee = null;
 
 // Load employee information when the page opens.
 async function loadProfile() {
+    if (!requireAuth()) return;
+    displayCurrentUser();
+
+    // Use the logged-in user's employee data
+    const user = getCurrentUser();
+    if (!user) return;
+
+    employeeId = user.employeeId;
     const message = document.getElementById('message');
+    if (!employeeId) {
+        message.textContent = 'No employee record is linked to this account.';
+        return;
+    }
 
     try {
         const employee = await apiRequest(`/employees/${employeeId}`);

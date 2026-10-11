@@ -5,6 +5,8 @@
 const CURRENT_EMPLOYEE_ID = 1;
 
 document.addEventListener("DOMContentLoaded", function () {
+    if (!requireAuth()) return;
+    displayCurrentUser();
 
     document.getElementById("currentUser").textContent = "Employee Undefined";
 

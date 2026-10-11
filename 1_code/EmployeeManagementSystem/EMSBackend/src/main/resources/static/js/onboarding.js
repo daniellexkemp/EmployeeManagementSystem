@@ -1,5 +1,10 @@
 // Danielle: New hire setup logic (UC-5)
 
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireAuth()) return;
+    displayCurrentUser();
+});
+
 document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const payload = {
