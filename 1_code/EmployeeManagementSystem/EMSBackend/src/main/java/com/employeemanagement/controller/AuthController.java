@@ -20,10 +20,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /**
-     * POST /api/auth/login
-     * Authenticates a user and returns their profile if credentials are valid.
-     */
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         CurrentUser user = authService.authenticate(request);
@@ -37,10 +34,6 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
-    /**
-     * POST /api/auth/register
-     * Registers a new user account linked to an existing employee record.
-     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
         try {
@@ -65,10 +58,6 @@ public class AuthController {
         }
     }
 
-    /**
-     * POST /api/auth/change-password
-     * Allows an authenticated user to change their password.
-     */
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body) {
         try {
