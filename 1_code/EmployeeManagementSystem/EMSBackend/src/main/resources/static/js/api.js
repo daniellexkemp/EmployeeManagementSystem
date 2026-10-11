@@ -22,6 +22,13 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
     return text ? JSON.parse(text) : null;
 }
 
+// Authentication
+window.AuthAPI = {
+    login: (username, password) => apiRequest('/auth/login', 'POST', { username, password }),
+    register: (username, password, employeeId) => apiRequest('/auth/register', 'POST', { username, password, employeeId }),
+    changePassword: (userId, oldPassword, newPassword) => apiRequest('/auth/change-password', 'POST', { userId, oldPassword, newPassword })
+};
+
 // HR / Employee Records
 window.EmployeeAPI = {
     getAll: (search = '') => {

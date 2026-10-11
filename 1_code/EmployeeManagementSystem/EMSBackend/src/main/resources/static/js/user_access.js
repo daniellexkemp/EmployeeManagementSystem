@@ -1,6 +1,12 @@
 // Danielle: Role permission logic (UC-7)
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (!requireAuth()) return;
+    displayCurrentUser();
+    if (!hasRole('HR_ADMIN', 'SYS_ADMIN')) {
+        document.getElementById('accessFeedback').textContent = 'HR Admins only.';
+        return;
+    }
     const select = document.getElementById('employeeSelect');
     try {
         const list = await EmployeeAPI.getAll();

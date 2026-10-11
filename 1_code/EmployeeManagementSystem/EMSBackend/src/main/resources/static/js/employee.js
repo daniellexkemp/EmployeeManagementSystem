@@ -3,6 +3,8 @@
 let allEmployees = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (!requireAuth()) return;
+    displayCurrentUser();
     await loadEmployees();
 
     // Attach event listeners for filtering

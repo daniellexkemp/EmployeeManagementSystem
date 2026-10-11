@@ -1,6 +1,8 @@
 // Nathaniel: Leave request submission logic (UC-3)
 
 document.addEventListener("DOMContentLoaded", function () {
+    if (!requireAuth()) return;
+    displayCurrentUser();
 
     const submitButton = document.getElementById("submitRequestBtn");
 
