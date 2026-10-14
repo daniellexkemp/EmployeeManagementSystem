@@ -73,9 +73,9 @@ function decide(id, note, newStatus, path) {
     return Promise.resolve(request);
   }
   // The back end records the audit-log entry for this decision.
-  return apiRequest('/approvals/' + id + path, 'PUT',
-    { decidedBy: currentManagerId(), decisionNote: note });
-}
+ return apiRequest('/approvals/' + id + path, 'PUT',
+    { decisionNote: note });
+ }
 
 function findMockRequest(id) {
   for (var i = 0; i < MOCK_REQUESTS.length; i++) {
@@ -206,8 +206,8 @@ function handleDecision(decideFunction, verb) {
 
 
 
-function init() {
-  if (!requireAuth()) return;
+async function init() {
+  if (!(await requireAuth())) return;
   displayCurrentUser();
   if (!hasRole('MANAGER', 'HR_ADMIN')) {
     document.getElementById('requestsTable').style.display = 'none';

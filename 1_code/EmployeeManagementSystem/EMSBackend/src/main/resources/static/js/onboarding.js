@@ -1,7 +1,7 @@
 // Danielle: New hire setup logic (UC-5)
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (!requireAuth()) return;
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!(await requireAuth())) return;
     displayCurrentUser();
 });
 

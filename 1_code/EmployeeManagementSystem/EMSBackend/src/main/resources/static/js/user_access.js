@@ -1,32 +1,84 @@
-// Danielle: Role permission logic (UC-7)
+
+// User Access - Role management
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!requireAuth()) return;
+    if (!(await requireAuth())) return;
+
     displayCurrentUser();
+
+    const feedback = document.getElementById('accessFeedback');
+    const select = document.getElementById('employeeSelect');
+    const roleSelect = document.getElementById('roleSelect');
+    const assignBtn = document.getElementById('assignBtn');
+
     if (!hasRole('HR_ADMIN', 'SYS_ADMIN')) {
-        document.getElementById('accessFeedback').textContent = 'HR Admins only.';
+        feedback.textContent = 'HR administrators only.';
+        select.disabled = true;
+        roleSelect.disabled = true;
+        assignBtn.disabled = true;
         return;
     }
-    const select = document.getElementById('employeeSelect');
-    try {
-        const list = await EmployeeAPI.getAll();
-        select.innerHTML = list.map(e => `<option value="${e.id}">${e.firstName} ${e.lastName} (${e.email})</option>`).join('');
-    } catch (err) {
-        select.innerHTML = '<option>Error loading employees</option>';
+
+    async function loadUsers() {
+        const users = await apiRequest('/users');
+
+        select.replaceChildren();
+
+        users.forEach(user => {
+            const option = document.createElement('option');
+
+            option.value = user.id;
+            option.textContent =
+                `${user.firstName} ${user.lastName} ` +
+                `(${user.username}) - ${user.role}`;
+
+            select.appendChild(option);
+        });
+
+        assignBtn.disabled = users.length === 0;
+
+        if (users.length === 0) {
+            feedback.textContent = 'No user accounts found.';
+        }
     }
 
-    document.getElementById('assignBtn').addEventListener('click', async () => {
-        const id = select.value;
-        const status = document.getElementById('roleSelect').value;
+    try {
+        await loadUsers();
+    } catch (error) {
+        feedback.textContent = 'Unable to load user accounts.';
+        assignBtn.disabled = true;
+        console.error(error);
+    }
+
+    assignBtn.addEventListener('click', async () => {
+        const userId = select.value;
+        const role = roleSelect.value;
+
+        if (!userId) {
+            feedback.textContent = 'Select a user account.';
+            return;
+        }
+
+        assignBtn.disabled = true;
+        feedback.textContent = '';
+
         try {
-            await fetch(`http://localhost:8080/api/employees/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ employmentStatus: status })
-            });
-            document.getElementById('accessFeedback').innerText = 'Access status updated!';
-        } catch (err) {
-            document.getElementById('accessFeedback').innerText = 'Update failed.';
+            await apiRequest(
+                `/users/${userId}/role`,
+                'PUT',
+                { role }
+            );
+
+            feedback.textContent = 'User role updated successfully.';
+
+            await loadUsers();
+
+        } catch (error) {
+            feedback.textContent = 'Unable to update user role.';
+            console.error(error);
+
+        } finally {
+            assignBtn.disabled = false;
         }
     });
 });

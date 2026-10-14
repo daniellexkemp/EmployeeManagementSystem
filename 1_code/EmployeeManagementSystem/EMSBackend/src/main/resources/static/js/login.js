@@ -1,62 +1,93 @@
+
 // login.js - Login form handling
 
-document.addEventListener('DOMContentLoaded', () => {
-    // If already logged in, redirect to dashboard
-    if (localStorage.getItem('currentUser')) {
-        window.location.href = 'index.html';
-        return;
-    }
-
+document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('loginForm');
     const messageEl = document.getElementById('loginMessage');
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // Do not trust an old localStorage login.
+    localStorage.removeItem('currentUser');
+
+    // Check whether the server already has an authenticated session.
+    try {
+        const existingUser = await AuthAPI.currentUser();
+
+        if (existingUser) {
+            redirectForRole(existingUser.role);
+            return;
+        }
+    } catch (error) {
+        // No valid session; allow the user to log in.
+    }
+
+    if (!form || !messageEl) {
+        console.error('Login form elements not found.');
+        return;
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
         messageEl.className = '';
         messageEl.style.display = 'none';
 
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
+        const username =
+            document.getElementById('username').value.trim();
+
+        const password =
+            document.getElementById('password').value;
 
         if (!username || !password) {
-            showMessage('Please enter both username and password.', 'error');
+            showMessage(
+                'Please enter both username and password.',
+                'error'
+            );
             return;
         }
 
+        const submitButton =
+            form.querySelector('button[type="submit"]');
+
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+
         try {
-            const response = await fetch(API_BASE_URL + '/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+            const user = await AuthAPI.login(username, password);
 
-            const data = await response.json();
+            showMessage(
+                'Login successful! Redirecting...',
+                'success'
+            );
 
-            if (response.ok) {
-                // Store user info in localStorage
-                localStorage.setItem('currentUser', JSON.stringify(data));
-                showMessage('Login successful! Redirecting...', 'success');
-                
-                // Redirect based on role after a brief delay
-                setTimeout(() => {
-                    if (data.role === 'MANAGER' || data.role === 'HR_ADMIN') {
-                        window.location.href = 'manager_approvals.html';
-                    } else {
-                        window.location.href = 'index.html';
-                    }
-                }, 1000);
-            } else {
-                showMessage(data.error || 'Invalid username or password.', 'error');
+            redirectForRole(user.role);
+
+        } catch (error) {
+            console.error('Login error:', error);
+
+            showMessage(
+                'Login failed. Check your credentials and try again.',
+                'error'
+            );
+
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
             }
-        } catch (err) {
-            showMessage('Connection error. Please try again.', 'error');
-            console.error('Login error:', err);
         }
     });
 
-    function showMessage(text, type) {
-        messageEl.textContent = text;
+    function showMessage(message, type) {
+        messageEl.textContent = message;
         messageEl.className = type;
         messageEl.style.display = 'block';
+    }
+
+    function redirectForRole(role) {
+        if (role === 'MANAGER' || role === 'HR_ADMIN') {
+            window.location.replace('manager_approvals.html');
+        } else {
+            window.location.replace('index.html');
+        }
     }
 });
