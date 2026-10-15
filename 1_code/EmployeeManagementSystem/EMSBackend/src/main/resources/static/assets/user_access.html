@@ -31,17 +31,17 @@
 <main>
     <div class="container">
         <h2>MANAGE USER ACCESS</h2>
-        <p style="margin-bottom: 16px; font-size: 14px; color: #666;">Assign department/status permissions to employee.</p>
+        <p style="margin-bottom: 16px; font-size: 14px; color: #666;">Assign roles to existing user accounts.</p>
 
         <!--------------- User Access Form Controls --------------->
         <div class="form-group">
             <select id="employeeSelect"></select>
             <select id="roleSelect">
-                <option value="ACTIVE">Standard Employee</option>
-                <option value="HR_ADMIN">HR Admin</option>
+                <option value="EMPLOYEE">Standard Employee</option>
                 <option value="MANAGER">Manager</option>
+                <option value="HR_ADMIN">HR Admin</option>
             </select>
-            <button id="assignBtn">Update Access Status</button>
+            <button id="assignBtn">Update User Role</button>
         </div>
 
         <!--------------- Feedback & Navigation Return Link --------------->

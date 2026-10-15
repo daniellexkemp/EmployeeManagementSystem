@@ -1,12 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.employeemanagement.service;
 
 import com.employeemanagement.model.Employee;
 import com.employeemanagement.repository.EmployeeRepository;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -31,35 +31,78 @@ public class EmployeeService {
         if (query == null || query.isBlank()) {
             return getAllEmployees();
         }
+
         return repository.searchEmployees(query.trim());
     }
 
+    @Transactional
     public Employee createEmployee(Employee employee) {
-        if (employee.getEmploymentStatus() == null || employee.getEmploymentStatus().isBlank()) {
+        if (employee.getEmploymentStatus() == null
+                || employee.getEmploymentStatus().isBlank()) {
+
             employee.setEmploymentStatus("ACTIVE");
         }
+
         return repository.save(employee);
     }
 
+    @Transactional
     public Employee updateEmployee(Long id, Employee updatedData) {
-        return repository.findById(id).map(emp -> {
-            emp.setFirstName(updatedData.getFirstName());
-            emp.setLastName(updatedData.getLastName());
-            emp.setEmail(updatedData.getEmail());
-            emp.setPhone(updatedData.getPhone());
-            emp.setDepartment(updatedData.getDepartment());
-            emp.setJobTitle(updatedData.getJobTitle());
-            if (updatedData.getEmploymentStatus() != null) {
-                emp.setEmploymentStatus(updatedData.getEmploymentStatus());
-            }
-            return repository.save(emp);
-        }).orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Employee not found with id: " + id
+                ));
+
+        employee.setFirstName(updatedData.getFirstName());
+        employee.setLastName(updatedData.getLastName());
+        employee.setEmail(updatedData.getEmail());
+        employee.setPhone(updatedData.getPhone());
+        employee.setDepartment(updatedData.getDepartment());
+        employee.setJobTitle(updatedData.getJobTitle());
+
+        if (updatedData.getEmploymentStatus() != null) {
+            employee.setEmploymentStatus(
+                    updatedData.getEmploymentStatus()
+            );
+        }
+
+        return repository.save(employee);
     }
 
+    @Transactional
+    public Employee updateContactInformation(
+            Long employeeId,
+            String email,
+            String phone) {
+
+        if (email == null || email.isBlank()
+                || phone == null || phone.isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Email and phone are required."
+            );
+        }
+
+        Employee employee = repository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Employee not found with id: " + employeeId
+                ));
+
+        employee.setEmail(email.trim());
+        employee.setPhone(phone.trim());
+
+        return repository.save(employee);
+    }
+
+    @Transactional
     public Employee deactivateEmployee(Long id) {
-        return repository.findById(id).map(emp -> {
-            emp.setEmploymentStatus("DEACTIVATED");
-            return repository.save(emp);
-        }).orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Employee not found with id: " + id
+                ));
+
+        employee.setEmploymentStatus("DEACTIVATED");
+
+        return repository.save(employee);
     }
 }

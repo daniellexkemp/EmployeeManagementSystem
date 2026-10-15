@@ -3,7 +3,7 @@
 let allEmployees = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!requireAuth()) return;
+    if (!(await requireAuth())) return;
     displayCurrentUser();
     await loadEmployees();
 

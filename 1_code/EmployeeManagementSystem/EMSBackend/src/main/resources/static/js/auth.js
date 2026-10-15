@@ -1,57 +1,55 @@
-// auth.js - Authentication utilities for all pages
 
-/**
- * Get the currently logged-in user from localStorage.
- * Returns null if no user is stored.
- */
+// auth.js - Authentication utilities for EMS pages
+
+let currentUser = null;
+
+// Return the user verified by the server during this page load.
 function getCurrentUser() {
-    const raw = localStorage.getItem('currentUser');
-    if (!raw) return null;
+    return currentUser;
+}
+
+// Verify the current session with the backend.
+async function requireAuth() {
     try {
-        return JSON.parse(raw);
-    } catch {
-        return null;
-    }
-}
+        currentUser = await AuthAPI.currentUser();
 
-/**
- * Clear the current user session from localStorage.
- */
-function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'login.html';
-}
-
-/**
- * Check if the user is authenticated.
- * If not, redirect to login page.
- */
-function requireAuth() {
-    if (!getCurrentUser()) {
-        window.location.href = 'login.html';
+        displayCurrentUser();
+        return true;
+    } catch (error) {
+        currentUser = null;
+        window.location.replace('login.html');
         return false;
     }
-    return true;
 }
 
-/**
- * Display the current user's name in the header bar.
- * Called by each page's JS on DOMContentLoaded.
- */
+// Log out of the server-side session.
+async function logout() {
+    try {
+        await AuthAPI.logout();
+    } catch (error) {
+        console.error('Logout failed:', error);
+        alert('Unable to log out. Please try again.');
+        return;
+    }
+
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    window.location.replace('login.html');
+}
+
+// Display the authenticated user's name.
 function displayCurrentUser() {
-    const user = getCurrentUser();
     const el = document.getElementById('currentUser');
-    if (el && user) {
-        el.textContent = `${user.firstName} ${user.lastName} (${user.role})`;
+
+    if (el && currentUser) {
+        el.textContent =
+            `${currentUser.firstName} ${currentUser.lastName} (${currentUser.role})`;
     }
 }
 
-/**
- * Check role permissions.
- * Returns true if user has one of the required roles.
- */
+// Frontend convenience check only.
+// Backend endpoints must independently enforce permissions.
 function hasRole(...allowedRoles) {
-    const user = getCurrentUser();
-    if (!user) return false;
-    return allowedRoles.includes(user.role);
+    return currentUser !== null &&
+        allowedRoles.includes(currentUser.role);
 }

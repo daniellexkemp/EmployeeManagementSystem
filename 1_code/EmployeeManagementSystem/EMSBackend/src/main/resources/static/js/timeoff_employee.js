@@ -1,14 +1,12 @@
-﻿// Nathaniel: Leave request submission logic (UC-3)
+﻿
+// Employee Time-Off Requests (UC-3)
+// Employee identity is determined by the authenticated server session.
 
-// Nathaniel: Leave request submission and tracking logic (UC-3)
+document.addEventListener("DOMContentLoaded", async function () {
 
-const CURRENT_EMPLOYEE_ID = 1;
+    if (!(await requireAuth())) return;
 
-document.addEventListener("DOMContentLoaded", function () {
-    if (!requireAuth()) return;
     displayCurrentUser();
-
-    document.getElementById("currentUser").textContent = "Employee Undefined";
 
     document.getElementById("submitRequestBtn")
         .addEventListener("click", submitRequest);
@@ -16,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("refreshBtn")
         .addEventListener("click", loadRequests);
 
-    loadRequests();
+    await loadRequests();
 });
 
 async function submitRequest() {
@@ -27,17 +25,22 @@ async function submitRequest() {
     const reason = document.getElementById("reason").value.trim();
 
     if (!leaveType || !startDate || !endDate) {
-        showMessage("Please complete all required fields.", "error");
+        showMessage(
+            "Please complete all required fields.",
+            "error"
+        );
         return;
     }
 
     if (endDate < startDate) {
-        showMessage("End date cannot be before start date.", "error");
+        showMessage(
+            "End date cannot be before start date.",
+            "error"
+        );
         return;
     }
 
     const request = {
-        employeeId: CURRENT_EMPLOYEE_ID,
         leaveType: leaveType,
         startDate: startDate,
         endDate: endDate,
@@ -47,7 +50,10 @@ async function submitRequest() {
     try {
         await apiRequest("/timeoff", "POST", request);
 
-        showMessage("Time-off request submitted successfully.", "success");
+        showMessage(
+            "Time-off request submitted successfully.",
+            "success"
+        );
 
         document.getElementById("leaveType").value = "";
         document.getElementById("startDate").value = "";
@@ -69,11 +75,9 @@ async function loadRequests() {
     const body = document.getElementById("requestsBody");
 
     try {
-        const requests = await apiRequest(
-            "/timeoff/employee/" + CURRENT_EMPLOYEE_ID
-        );
+        const requests = await apiRequest("/timeoff/mine");
 
-        body.innerHTML = "";
+        body.replaceChildren();
 
         if (!requests || requests.length === 0) {
             document.getElementById("requestsTable").style.display = "none";
@@ -99,7 +103,8 @@ async function loadRequests() {
         });
 
     } catch (error) {
-        body.innerHTML = "";
+        body.replaceChildren();
+
         showMessage(
             "Could not load time-off requests: " + error.message,
             "error"

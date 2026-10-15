@@ -135,8 +135,8 @@
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!requireAuth()) return;
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!(await requireAuth())) return;
         displayCurrentUser();
         document.getElementById('logoutBtn').addEventListener('click', logout);
     });
