@@ -87,7 +87,7 @@ public class EmployeeController {
 
     @PutMapping("/me/contact")
     public ResponseEntity<Employee> updateMyContact(
-            @RequestBody ContactUpdateRequest request,
+           @Valid @RequestBody ContactUpdateRequest request,
             Authentication authentication) {
 
         CurrentUser user = currentUser(authentication);
