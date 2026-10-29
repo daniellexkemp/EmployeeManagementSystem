@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR - User Access</title>
     <link rel="stylesheet" href="/css/styles.css">
+
 </head>
 <body>
 
@@ -16,6 +17,7 @@
     <strong>Employee Management System</strong>
     <span id="currentUser"></span>
 </div>
+
 <!--------------- Global Navigation Bar --------------->
 <nav>
     <a href="index.html">Dashboard</a>
@@ -31,17 +33,43 @@
 <main>
     <div class="container">
         <h2>MANAGE USER ACCESS</h2>
-        <p style="margin-bottom: 16px; font-size: 14px; color: #666;">Assign roles to existing user accounts.</p>
 
-        <!--------------- User Access Form Controls --------------->
-        <div class="form-group">
-            <select id="employeeSelect"></select>
-            <select id="roleSelect">
-                <option value="EMPLOYEE">Standard Employee</option>
-                <option value="MANAGER">Manager</option>
-                <option value="HR_ADMIN">HR Admin</option>
-            </select>
-            <button id="assignBtn">Update User Role</button>
+        <!--------------- User & Role Selection --------------->
+        <!-- IDs employeeSelect, roleSelect, assignBtn, and accessFeedback are unchanged
+             so user_access.js keeps loading users and saving roles as before. -->
+        <div class="access-row">
+            <div class="access-field">
+                <label for="employeeSelect">Select User:</label>
+                <select id="employeeSelect"></select>
+            </div>
+            <div class="access-field">
+                <label for="roleSelect">Assigned System Role:</label>
+                <select id="roleSelect">
+                    <option value="EMPLOYEE">Employee</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="HR_ADMIN">HR Admin</option>
+                </select>
+            </div>
+        </div>
+
+        <!--------------- System Permissions Preview (display only) --------------->
+        <div class="preview-panel">
+            <div class="preview-box">
+                <h3>SYSTEM PERMISSIONS PREVIEW</h3>
+                <div class="permission-grid">
+                    <label><input type="checkbox" data-perm="viewRecords"> <span>View Employee Records</span></label>
+                    <label><input type="checkbox" data-perm="approveTimeOff"> <span>Approve Time-Off Requests</span></label>
+                    <label><input type="checkbox" data-perm="deactivateRecords"> <span>Deactivate Employee Records</span></label>
+                    <label><input type="checkbox" data-perm="createEditRecords"> <span>Create / Edit Employee Records</span></label>
+                    <label><input type="checkbox" data-perm="securitySettings"> <span>Modify Security Settings</span></label>
+                </div>
+            </div>
+
+            <!--------------- Form Actions --------------->
+            <div class="preview-actions">
+                <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+                <button type="button" id="assignBtn">Save Access Roles</button>
+            </div>
         </div>
 
         <!--------------- Feedback & Navigation Return Link --------------->
@@ -54,6 +82,7 @@
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/user_access.js"></script>
+
 
 </body>
 </html>
