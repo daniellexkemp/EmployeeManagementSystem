@@ -3,6 +3,7 @@
 let allEmployees = [];
 let currentEmployee = null;     // employee currently shown in the modal
 let lastFocusedElement = null;  // returns keyboard focus after the modal closes
+let currentList = [];           // rows currently shown, used by Export
 
 // Deactivated records may be saved as either value; treat both as inactive.
 const INACTIVE_STATUSES = ['INACTIVE', 'DEACTIVATED'];
@@ -28,6 +29,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('addEmployeeBtn').addEventListener('click', () => {
         window.location.href = 'onboarding.html';
     });
+
+    document.getElementById('exportBtn').addEventListener('click', exportCsv);
 
     // Row buttons (View / Edit / Deactivate / Reactivate)
     document.getElementById('employeeTableBody').addEventListener('click', handleRowAction);
@@ -82,7 +85,6 @@ function getDepartments() {
     return [...new Set(allEmployees.map(e => e.department).filter(Boolean))].sort();
 }
 
-
 /* ------------------------ Directory table  ------------------------------------------ */
 
 // Fetch all employees from the Spring Boot backend / MySQL database
@@ -130,6 +132,7 @@ function filterTable() {
         return matchesName && matchesDept && matchesStatus;
     });
 
+    currentList = filtered;
     renderTable(filtered);
 }
 
@@ -211,6 +214,24 @@ async function handleReactivate(id) {
     }
 }
 
+// Download the rows currently shown in the directory as a CSV report (REQ-12)
+function exportCsv() {
+    const headers = ['ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Department', 'Job Title', 'Status'];
+    const rows = currentList.map(e => [
+        e.id, e.firstName, e.lastName, e.email, e.phone, e.department, e.jobTitle, getStatus(e)
+    ]);
+
+    const csv = [headers, ...rows]
+        .map(row => row.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    link.download = `employee_report_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
 
 /* ----------------------- View / Edit modal ------------------------------------------- */
 
@@ -262,7 +283,7 @@ function renderViewMode(successMessage = '') {
     document.getElementById('modalTitle').textContent = fullName(e) || 'Employee details';
 
     document.getElementById('modalBody').innerHTML = `
-        ${successMessage ? `<p class="form-success" role="status">${escapeHtml(successMessage)}</p>` : ''}
+        ${successMessage ? `<p id="statusMessage" class="success" role="status">${escapeHtml(successMessage)}</p>` : ''}
         <dl class="detail-list">
             ${fields.map(([label, value]) => `
                 <dt>${label}</dt>
@@ -320,7 +341,7 @@ function renderEditMode() {
 
     document.getElementById('modalBody').innerHTML = `
         <form id="editEmployeeForm" novalidate>
-            <div class="form-error" id="formError" role="alert" hidden></div>
+            <div id="statusMessage" class="error" role="alert" hidden></div>
 
             ${inputField('editId', 'Employee ID', e.id, 'text', 'readonly')}
 
@@ -389,7 +410,7 @@ function clearErrors() {
         el.classList.remove('invalid');
         el.removeAttribute('aria-invalid');
     });
-    const formError = document.getElementById('formError');
+    const formError = document.getElementById('statusMessage');
     formError.hidden = true;
     formError.textContent = '';
 }
@@ -407,7 +428,7 @@ function showErrors(errors) {
 }
 
 function showFormError(message) {
-    const formError = document.getElementById('formError');
+    const formError = document.getElementById('statusMessage');
     formError.textContent = message;
     formError.hidden = false;
 }
@@ -435,7 +456,7 @@ async function handleSave(event) {
 
     const statusSelect = document.getElementById('editStatus');
 
-    // Send the full record so no field is cleared by the update
+    // Sends the full record so no field is cleared by the update
     const payload = {
         ...currentEmployee,
         ...values,
