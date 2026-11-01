@@ -1,4 +1,3 @@
-
 // api.js - Shared API configuration and request helpers
 
 const API_BASE_URL = '/api';
@@ -120,5 +119,8 @@ window.EmployeeAPI = {
         apiRequest(`/employees/${id}`, 'PUT', data),
 
     deactivate: (id) =>
-        apiRequest(`/employees/${id}/deactivate`, 'PATCH')
+        apiRequest(`/employees/${id}/deactivate`, 'PATCH'),
+
+    reactivate: (id) =>
+        apiRequest(`/employees/${id}/reactivate`, 'PATCH')
 };

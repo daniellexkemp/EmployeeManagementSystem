@@ -77,6 +77,7 @@ h2 {
 
 input[type="text"],
 input[type="email"],
+input[type="tel"],
 input[type="number"],
 select,
 textarea {
@@ -280,7 +281,7 @@ tbody button {
   opacity: 0.5;
 }
 
-/*************** User Access (UC-7) ***************/
+/*************** User Access **************/
 
 .access-row {
   display: flex;
@@ -361,13 +362,15 @@ tbody button {
   margin-top: 20px;
 }
 
-.preview-actions .btn-secondary {
+.preview-actions .btn-secondary,
+.modal-footer .btn-secondary {
   background: #fff;
   color: #2c3e50;
   border: 1px solid #2c3e50;
 }
 
-.preview-actions .btn-secondary:hover {
+.preview-actions .btn-secondary:hover,
+.modal-footer .btn-secondary:hover {
   background: #f4f6f8;
 }
 
@@ -386,4 +389,152 @@ tbody button {
   margin-top: 16px;
   font-size: 14px;
   font-weight: bold;
+}
+
+/*************** Employee Directory: View / Edit Modal (UC-1) ***************/
+
+/* Space between View / Edit / Deactivate in each row */
+.actions-cell {
+  white-space: nowrap;
+}
+
+.actions-cell button + button {
+  margin-left: 6px;
+}
+
+/* Dark overlay behind the popup */
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 62, 80, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+/* Popup box (same header color as the top bar) */
+.modal {
+  background: #fff;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #2c3e50;
+  color: #fff;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.modal-close {
+  padding: 0 4px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid #ccc;
+}
+
+/* View mode: label / value pairs */
+.detail-list {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 16px;
+  font-size: 14px;
+}
+
+.detail-list dt {
+  font-weight: bold;
+}
+
+.detail-list dd {
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: #777;
+  font-style: italic;
+}
+
+/* Edit mode: fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+
+.form-field {
+  margin-bottom: 14px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+}
+
+.form-field input[readonly] {
+  background: #eee;
+  color: #555;
+}
+
+.form-field input.invalid {
+  border-color: #c0392b;
+}
+
+.field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #c0392b;
+}
+
+.field-note {
+  font-size: 14px;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .detail-list,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }

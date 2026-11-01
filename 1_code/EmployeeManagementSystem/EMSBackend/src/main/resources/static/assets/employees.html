@@ -46,31 +46,43 @@
             <select id="statusFilter">
                 <option value="">All Statuses</option>
                 <option value="ACTIVE">Active</option>
+                <option value="ON_LEAVE">On Leave</option>
                 <option value="INACTIVE">Inactive</option>
             </select>
 
             <button id="searchBtn">Filter</button>
-            <a href="onboarding.html"><button>+ Add New Employee</button></a>
+            <button type="button" id="addEmployeeBtn">+ Add New Employee</button>
         </div>
 
         <!--------------- Employee Data Table --------------->
         <table>
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Dept</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Job Title</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
             </thead>
             <tbody id="employeeTableBody">
-            <!--------------- Dynamic employee rows will be injected here via JavaScript --------------->
             </tbody>
         </table>
     </div>
 </main>
+
+<!--------------- Employee View / Edit Modal --------------->
+<div id="employeeModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+            <h2 id="modalTitle">Employee Details</h2>
+            <button type="button" id="modalCloseBtn" class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+    </div>
+</div>
 
 <!--------------- Page-Specific JavaScript Files --------------->
 <script src="/js/api.js"></script>

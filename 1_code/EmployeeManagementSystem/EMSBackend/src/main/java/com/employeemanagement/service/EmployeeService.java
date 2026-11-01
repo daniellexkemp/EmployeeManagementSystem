@@ -105,4 +105,16 @@ public class EmployeeService {
 
         return repository.save(employee);
     }
+
+    @Transactional
+    public Employee reactivateEmployee(Long id) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Employee not found with id: " + id
+                ));
+
+        employee.setEmploymentStatus("ACTIVE");
+
+        return repository.save(employee);
+    }
 }

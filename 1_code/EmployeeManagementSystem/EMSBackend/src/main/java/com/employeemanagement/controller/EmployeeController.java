@@ -153,4 +153,19 @@ public class EmployeeController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PatchMapping("/{id}/reactivate")
+    @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
+    public ResponseEntity<Employee> reactivate(
+            @PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(
+                    employeeService.reactivateEmployee(id)
+            );
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
