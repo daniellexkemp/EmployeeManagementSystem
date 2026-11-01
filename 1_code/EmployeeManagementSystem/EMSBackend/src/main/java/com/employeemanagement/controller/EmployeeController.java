@@ -1,4 +1,3 @@
-
 package com.employeemanagement.controller;
 
 import com.employeemanagement.model.ContactUpdateRequest;
@@ -55,14 +54,18 @@ public class EmployeeController {
         return user;
     }
 
+    // Employee Directory list: HR only (REQ-14)
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
     public List<Employee> getAll(
             @RequestParam(required = false) String search) {
 
         return employeeService.searchEmployees(search);
     }
 
+    // Full employee record (View / Edit popup): HR only (REQ-14)
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
     public ResponseEntity<Employee> getById(@PathVariable Long id) {
         return employeeService.getEmployeeById(id)
                 .map(ResponseEntity::ok)
@@ -87,7 +90,7 @@ public class EmployeeController {
 
     @PutMapping("/me/contact")
     public ResponseEntity<Employee> updateMyContact(
-           @Valid @RequestBody ContactUpdateRequest request,
+            @Valid @RequestBody ContactUpdateRequest request,
             Authentication authentication) {
 
         CurrentUser user = currentUser(authentication);

@@ -9,6 +9,8 @@ let currentList = [];           // rows currently shown, used by Export
 const INACTIVE_STATUSES = ['INACTIVE', 'DEACTIVATED'];
 // Statuses HR can choose in the Edit form. Deactivation stays on its own button.
 const EDITABLE_STATUSES = ['ACTIVE', 'ON_LEAVE'];
+// Roles allowed to use the Employee Directory (REQ-14)
+const DIRECTORY_ROLES = ['HR_ADMIN', 'SYS_ADMIN'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Only run on the directory page
@@ -16,6 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!(await requireAuth())) return;
     displayCurrentUser();
+
+    // Block the page for roles that aren't allowed to see employee records
+    if (!(await canUseDirectory())) {
+        showAccessDenied();
+        return;
+    }
+
     await loadEmployees();
 
     // Filtering
@@ -48,6 +57,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* --------------------- Helpers --------------------------------------------- */
+
+// Check the signed-in user's role before loading any employee data
+async function canUseDirectory() {
+    try {
+        const user = await AuthAPI.currentUser();
+        const roles = [].concat(user?.role ?? user?.roles ?? []);
+        return roles.some(r => DIRECTORY_ROLES.includes(String(r).replace(/^ROLE_/, '')));
+    } catch (err) {
+        return false;
+    }
+}
+
+// Replace the directory with a message, matching the Manager Approvals pattern
+function showAccessDenied() {
+    document.querySelector('main .container').innerHTML = `
+        <h1>EMPLOYEE DIRECTORY</h1>
+        <p>Only HR administrators can view the employee directory.</p>
+    `;
+}
 
 // Prevent names or other text from being read as HTML
 function escapeHtml(value) {
