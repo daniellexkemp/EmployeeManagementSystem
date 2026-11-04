@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!(await requireAuth())) return;
     displayCurrentUser();
 
+    // Show the Time-Off Report navigation link to HR administrators.
+    const reportLink = document.getElementById('timeOffReportLink');
+    if (reportLink && hasRole('HR_ADMIN')) {
+        reportLink.hidden = false;
+    }
+
     // Block the page for roles that aren't allowed to see employee records
     if (!(await canUseDirectory())) {
         showAccessDenied();

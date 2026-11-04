@@ -22,6 +22,7 @@
     <a href="employees.html">Employee Directory</a>
     <a href="timeoff_employee.html">Time-Off Requests</a>
     <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="timeoff_report.html" id="timeOffReportLink" hidden>Time-Off Report</a>
     <a href="onboarding.html">Onboarding</a>
     <a href="user_access.html">User Access</a>
     <a href="profile.html">Profile</a>
@@ -39,26 +40,38 @@
             <p>Search and manage employee records.</p>
             <a href="employees.html">Open Directory</a>
         </div>
+
         <div class="dashboard-card">
             <h3>Time-Off Requests</h3>
             <p>Submit and track your time-off requests.</p>
             <a href="timeoff_employee.html">Request Time Off</a>
         </div>
+
         <div class="dashboard-card">
             <h3>Manager Approvals</h3>
             <p>Review and approve pending requests.</p>
             <a href="manager_approvals.html">View Approvals</a>
         </div>
+
+        <!-- HR-only Time-Off Reporting (REQ-12) -->
+        <div class="dashboard-card" id="timeOffReportCard" hidden>
+            <h3>Time-Off Report</h3>
+            <p>View, filter, and export employee time-off records.</p>
+            <a href="timeoff_report.html">View Report</a>
+        </div>
+
         <div class="dashboard-card">
             <h3>Onboarding</h3>
             <p>Add new employees to the system.</p>
             <a href="onboarding.html">Add Employee</a>
         </div>
+
         <div class="dashboard-card">
             <h3>User Access</h3>
             <p>Manage roles and permissions.</p>
             <a href="user_access.html">Manage Access</a>
         </div>
+
         <div class="dashboard-card">
             <h3>Profile</h3>
             <p>View and update your profile.</p>
@@ -72,8 +85,17 @@
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         if (!(await requireAuth())) return;
+
         displayCurrentUser();
-        document.getElementById('logoutBtn').addEventListener('click', logout);
+
+        document.getElementById('logoutBtn')
+            .addEventListener('click', logout);
+
+        // Show reporting navigation only to HR administrators.
+        if (hasRole('HR_ADMIN')) {
+            document.getElementById('timeOffReportLink').hidden = false;
+            document.getElementById('timeOffReportCard').hidden = false;
+        }
     });
 </script>
 
