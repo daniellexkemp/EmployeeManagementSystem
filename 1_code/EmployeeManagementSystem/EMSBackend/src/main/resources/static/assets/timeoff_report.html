@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - Time-Off Report</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- Top Header Bar -->
+<div class="header">
+    <strong>Employee Management System</strong>
+    <div style="display:flex; align-items:center; gap:16px;">
+        <span id="currentUser"></span>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<!-- Global Navigation Bar -->
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="timeoff_report.html" class="active">Time-Off Report</a>
+    <a href="onboarding.html">Onboarding</a>
+    <a href="user_access.html">User Access</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<!-- Main Content Area -->
+<main>
+    <div class="container">
+        <h1>TIME-OFF REPORT</h1>
+
+        <!-- Search and Filter Controls -->
+        <div class="filters">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search by employee name..."
+            >
+
+            <select id="leaveTypeFilter">
+                <option value="">All Leave Types</option>
+            </select>
+
+            <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="APPROVED">Approved</option>
+                <option value="DENIED">Denied</option>
+            </select>
+
+            <button type="button" id="filterBtn">Filter</button>
+            <button type="button" id="resetBtn">Reset</button>
+            <button type="button" id="exportBtn">Export CSV</button>
+        </div>
+
+        <p id="reportMessage" role="status" aria-live="polite"></p>
+
+        <!-- Time-Off Report Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Employee</th>
+                    <th>Leave Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Days Requested</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody"></tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Shared and Page-Specific JavaScript -->
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/timeoff_report.js"></script>
+
+</body>
+</html>

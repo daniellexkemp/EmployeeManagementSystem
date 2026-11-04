@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,14 @@ public class TimeOffController {
         }
 
         return service.getRequestsForEmployee(employeeId);
+    }
+    
+    // Retrieve all time-off requests for HR reporting (REQ-12).
+    @PreAuthorize("hasAuthority('HR_ADMIN')")
+    @GetMapping("/report")
+    public List<TimeOffRequestResponse> getTimeOffReport() {
+
+        return service.getAllRequestsForReport();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

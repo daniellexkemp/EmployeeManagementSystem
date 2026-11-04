@@ -9,5 +9,9 @@ import java.util.List;
 @Repository
 public interface TimeOffRepository extends JpaRepository<TimeOffRequest, Long> {
 
+    // Retrieve requests submitted by a specific employee.
     List<TimeOffRequest> findByEmployeeIdOrderBySubmittedAtDesc(Long employeeId);
+
+    // Retrieve all requests for HR time-off reporting.
+    List<TimeOffRequest> findAllByOrderBySubmittedAtDesc();
 }
