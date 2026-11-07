@@ -101,5 +101,20 @@ document.getElementById('profileForm')
 
 document.getElementById('cancelButton')
     .addEventListener('click', cancelChanges);
+document.getElementById('backButton')
+    .addEventListener('click', function () {
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
 
+        const hasUnsavedChanges = originalEmployee &&
+            (email !== (originalEmployee.email || '') ||
+             phone !== (originalEmployee.phone || ''));
+
+        if (hasUnsavedChanges &&
+            !confirm('You have unsaved changes. Leave this page?')) {
+            return;
+        }
+
+        window.location.href = 'index.html';
+    });
 loadProfile();
