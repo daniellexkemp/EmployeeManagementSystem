@@ -21,4 +21,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "LOWER(e.email) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(e.department) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Employee> searchEmployees(@Param("query") String query);
+    List<Employee> findByManager_Id(Long managerId);
 }

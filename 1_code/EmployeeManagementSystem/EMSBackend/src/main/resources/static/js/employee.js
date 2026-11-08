@@ -5,6 +5,14 @@ let allEmployees = [];
 document.addEventListener('DOMContentLoaded', async () => {
     if (!(await requireAuth())) return;
     displayCurrentUser();
+    
+    const addEmployeeLink = document.getElementById('addEmployeeLink');
+    
+    if (addEmployeeLink && (hasRole('HR_ADMIN') || hasRole('SYS_ADMIN'))) {
+
+    addEmployeeLink.style.display = '';
+}
+
     await loadEmployees();
 
     // Attach event listeners for filtering
@@ -78,7 +86,11 @@ function renderTable(list) {
             <td>${e.department || ''}</td>
             <td><span class="${(e.employmentStatus || 'ACTIVE') === 'ACTIVE' ? 'status-approved' : 'status-denied'}">${e.employmentStatus || 'ACTIVE'}</span></td>
             <td>
-                <button onclick="handleDeactivate(${e.id})">Deactivate</button>
+             
+    
+${(hasRole('HR_ADMIN') || hasRole('SYS_ADMIN')) ? `<button onclick="handleDeactivate(${e.id})">Deactivate</button>` : ''}
+
+
             </td>
         </tr>
     `).join('');

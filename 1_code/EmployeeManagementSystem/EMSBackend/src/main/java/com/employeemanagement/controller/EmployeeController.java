@@ -55,19 +55,87 @@ public class EmployeeController {
         return user;
     }
 
-    @GetMapping
-    public List<Employee> getAll(
-            @RequestParam(required = false) String search) {
+   @GetMapping
+public List<Employee> getAll(
+        @RequestParam(required = false) String search,
+        Authentication authentication) {
 
-        return employeeService.searchEmployees(search);
+    CurrentUser user = currentUser(authentication);
+
+    if ("MANAGER".equals(user.role())) {
+        if (user.employeeId() == null) {
+            throw new AccessDeniedException(
+                "Manager is not linked to an employee record."
+            );
+        }
+
+        List<Employee> supervisedEmployees =
+                employeeService.getEmployeesByManager(user.employeeId());
+
+        if (search == null || search.isBlank()) {
+            return supervisedEmployees;
+        }
+
+        String query = search.trim().toLowerCase();
+
+        return supervisedEmployees.stream()
+                .filter(e ->
+                    (e.getFirstName() != null &&
+                     e.getFirstName().toLowerCase().contains(query)) ||
+                    (e.getLastName() != null &&
+                     e.getLastName().toLowerCase().contains(query)) ||
+                    (e.getEmail() != null &&
+                     e.getEmail().toLowerCase().contains(query)) ||
+                    (e.getDepartment() != null &&
+                     e.getDepartment().toLowerCase().contains(query))
+                )
+                .toList();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Employee> getById(@PathVariable Long id) {
-        return employeeService.getEmployeeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    return employeeService.searchEmployees(search);
+}
+@GetMapping("/supervisors")
+@PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
+public List<Employee> getSupervisor() {
+    return employeeService.getEligibleSupervisors();
+}
+  @GetMapping("/{id}")
+public ResponseEntity<Employee> getById(
+        @PathVariable Long id,
+        Authentication authentication) {
+
+    CurrentUser user = currentUser(authentication);
+
+    if ("MANAGER".equals(user.role())) {
+        if (user.employeeId() == null) {
+            throw new AccessDeniedException(
+                "Manager is not linked to an employee record."
+            );
+        }
+
+        Employee employee = employeeService.getEmployeeById(id)
+                .orElse(null);
+
+        if (employee == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Employee manager = employee.getManager();
+
+        if (manager == null ||
+                !user.employeeId().equals(manager.getId())) {
+            throw new AccessDeniedException(
+                "You are not authorized to view this employee."
+            );
+        }
+
+        return ResponseEntity.ok(employee);
     }
+
+    return employeeService.getEmployeeById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
 
     @GetMapping("/me")
     public ResponseEntity<Employee> getMyProfile(
@@ -113,10 +181,11 @@ public class EmployeeController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
-    public ResponseEntity<Employee> create(
-            @Valid @RequestBody Employee employee) {
+   public ResponseEntity<Employee> create(
+        @Valid @RequestBody Employee employee,
+        @RequestParam(required = false) Long supervisorId) {
 
-        Employee saved = employeeService.createEmployee(employee);
+        Employee saved = employeeService.createEmployee(employee, supervisorId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

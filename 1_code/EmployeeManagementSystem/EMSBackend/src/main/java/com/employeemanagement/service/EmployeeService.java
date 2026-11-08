@@ -3,6 +3,7 @@ package com.employeemanagement.service;
 
 import com.employeemanagement.model.Employee;
 import com.employeemanagement.repository.EmployeeRepository;
+import com.employeemanagement.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class EmployeeService {
 
     private final EmployeeRepository repository;
-
-    public EmployeeService(EmployeeRepository repository) {
-        this.repository = repository;
+    private final UserRepository userRepository;
+    
+    public EmployeeService(EmployeeRepository repository, UserRepository userRepository) {
+    this.repository = repository;
+    this.userRepository = userRepository;   
     }
 
     public List<Employee> getAllEmployees() {
@@ -36,13 +39,30 @@ public class EmployeeService {
     }
 
     @Transactional
-    public Employee createEmployee(Employee employee) {
+   public Employee createEmployee(Employee employee, Long supervisorId) {
         if (employee.getEmploymentStatus() == null
                 || employee.getEmploymentStatus().isBlank()) {
 
             employee.setEmploymentStatus("ACTIVE");
         }
+if (supervisorId != null) {
+    Employee supervisor = repository.findById(supervisorId)
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "Supervisor not found: " + supervisorId));
+    
+boolean validSupervisor = userRepository
+        .findByRoleAndEnabledTrue("MANAGER")
+        .stream()
+        .anyMatch(user -> user.getEmployee() != null
+                && supervisorId.equals(user.getEmployee().getId()));
 
+if (!validSupervisor) {
+    throw new IllegalArgumentException(
+            "Selected supervisor must have an enabled MANAGER account.");
+}
+
+    employee.setManager(supervisor);
+}
         return repository.save(employee);
     }
 
@@ -105,4 +125,16 @@ public class EmployeeService {
 
         return repository.save(employee);
     }
+    public List<Employee> getEmployeesByManager(Long managerId) {
+    return repository.findByManager_Id(managerId);
+}
+
+public List<Employee> getEligibleSupervisors() {
+    return userRepository.findByRoleAndEnabledTrue("MANAGER")
+            .stream()
+            .map(user -> user.getEmployee())
+            .filter(employee -> employee != null)
+            .toList();
+}
+    
 }

@@ -117,4 +117,6 @@ document.getElementById('backButton')
 
         window.location.href = 'index.html';
     });
+    document.getElementById('logoutBtn')
+    .addEventListener('click', logout);
 loadProfile();

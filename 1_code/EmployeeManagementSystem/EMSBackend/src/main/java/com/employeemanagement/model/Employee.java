@@ -3,12 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.employeemanagement.model;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -28,6 +31,10 @@ public class Employee {
     private String department;
     private String jobTitle;
     private String employmentStatus; // "ACTIVE", "DEACTIVATED", "ONBOARDING"
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "manager_id")
+@JsonIgnore
+private Employee manager;
 
     public Employee() {}
 
@@ -55,4 +62,11 @@ public class Employee {
 
     public String getEmploymentStatus() { return employmentStatus; }
     public void setEmploymentStatus(String employmentStatus) { this.employmentStatus = employmentStatus; }
+    public Employee getManager() {
+    return manager;
+}
+
+public void setManager(Employee manager) {
+    this.manager = manager;
+}
 }
