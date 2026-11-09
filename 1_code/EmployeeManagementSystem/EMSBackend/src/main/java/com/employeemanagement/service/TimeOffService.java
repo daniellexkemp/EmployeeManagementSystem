@@ -80,4 +80,15 @@ public class TimeOffService {
                 .map(TimeOffRequestResponse::from)
                 .toList();
     }
+    
+    // Retrieve all time-off requests for HR reporting (REQ-12).
+    @Transactional(readOnly = true)
+    public List<TimeOffRequestResponse> getAllRequestsForReport() {
+
+        return timeOffRepository
+                .findAllByOrderBySubmittedAtDesc()
+                .stream()
+                .map(TimeOffRequestResponse::from)
+                .toList();
+    }
 }

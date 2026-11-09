@@ -125,6 +125,7 @@ if (!validSupervisor) {
 
         return repository.save(employee);
     }
+
     public List<Employee> getEmployeesByManager(Long managerId) {
     return repository.findByManager_Id(managerId);
 }
@@ -136,5 +137,18 @@ public List<Employee> getEligibleSupervisors() {
             .filter(employee -> employee != null)
             .toList();
 }
-    
+
+
+    @Transactional
+    public Employee reactivateEmployee(Long id) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Employee not found with id: " + id
+                ));
+
+        employee.setEmploymentStatus("ACTIVE");
+
+        return repository.save(employee);
+    }
+
 }

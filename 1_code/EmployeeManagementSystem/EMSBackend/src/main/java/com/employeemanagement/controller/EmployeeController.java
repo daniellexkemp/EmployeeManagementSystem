@@ -1,4 +1,3 @@
-
 package com.employeemanagement.controller;
 
 import com.employeemanagement.model.ContactUpdateRequest;
@@ -55,11 +54,10 @@ public class EmployeeController {
         return user;
     }
 
-   @GetMapping
+@GetMapping
 public List<Employee> getAll(
         @RequestParam(required = false) String search,
         Authentication authentication) {
-
     CurrentUser user = currentUser(authentication);
 
     if ("MANAGER".equals(user.role())) {
@@ -130,11 +128,11 @@ public ResponseEntity<Employee> getById(
         }
 
         return ResponseEntity.ok(employee);
-    }
 
-    return employeeService.getEmployeeById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    }
+return employeeService.getEmployeeById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
 }
 
     @GetMapping("/me")
@@ -155,7 +153,7 @@ public ResponseEntity<Employee> getById(
 
     @PutMapping("/me/contact")
     public ResponseEntity<Employee> updateMyContact(
-           @Valid @RequestBody ContactUpdateRequest request,
+            @Valid @RequestBody ContactUpdateRequest request,
             Authentication authentication) {
 
         CurrentUser user = currentUser(authentication);
@@ -216,6 +214,21 @@ public ResponseEntity<Employee> getById(
         try {
             return ResponseEntity.ok(
                     employeeService.deactivateEmployee(id)
+            );
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}/reactivate")
+    @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
+    public ResponseEntity<Employee> reactivate(
+            @PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(
+                    employeeService.reactivateEmployee(id)
             );
 
         } catch (IllegalArgumentException e) {
