@@ -10,7 +10,7 @@ const INACTIVE_STATUSES = ['INACTIVE', 'DEACTIVATED'];
 // Statuses HR can choose in the Edit form. Deactivation stays on its own button.
 const EDITABLE_STATUSES = ['ACTIVE', 'ON_LEAVE'];
 // Roles allowed to use the Employee Directory (REQ-14)
-const DIRECTORY_ROLES = ['HR_ADMIN', 'SYS_ADMIN'];
+const DIRECTORY_ROLES = ['HR_ADMIN', 'SYS_ADMIN', 'MANAGER'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Only run on the directory page
@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!(await requireAuth())) return;
     displayCurrentUser();
+
+    
+    const addEmployeeLink = document.getElementById('addEmployeeLink');
+    
+    if (addEmployeeLink && (hasRole('HR_ADMIN') || hasRole('SYS_ADMIN'))) {
+
+    addEmployeeLink.style.display = '';
+}
+
 
     // Show the Time-Off Report navigation link to HR administrators.
     const reportLink = document.getElementById('timeOffReportLink');
@@ -31,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+
     await loadEmployees();
 
     // Filtering
@@ -41,9 +51,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('departmentFilter').addEventListener('change', filterTable);
     document.getElementById('statusFilter').addEventListener('change', filterTable);
 
-    document.getElementById('addEmployeeBtn').addEventListener('click', () => {
-        window.location.href = 'onboarding.html';
-    });
+    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+
+if (addEmployeeBtn) {
+    if (hasRole('HR_ADMIN') || hasRole('SYS_ADMIN')) {
+        addEmployeeBtn.addEventListener('click', () => {
+            window.location.href = 'onboarding.html';
+        });
+    } else {
+        addEmployeeBtn.hidden = true;
+    }
+}
+   
 
     document.getElementById('exportBtn').addEventListener('click', exportCsv);
 
@@ -79,7 +98,7 @@ async function canUseDirectory() {
 function showAccessDenied() {
     document.querySelector('main .container').innerHTML = `
         <h1>EMPLOYEE DIRECTORY</h1>
-        <p>Only HR administrators can view the employee directory.</p>
+        <p>Only authorized administrators and managers can view the employee directory.</p>
     `;
 }
 
@@ -179,6 +198,7 @@ function renderTable(list) {
         return;
     }
 
+
     tbody.innerHTML = list.map(e => {
         const status = getStatus(e);
         const name = escapeHtml(fullName(e));
@@ -195,8 +215,8 @@ function renderTable(list) {
                 <td><span class="${statusClass(status)}">${escapeHtml(formatStatus(status))}</span></td>
                 <td class="actions-cell">
                     <button type="button" data-action="view" data-id="${e.id}" aria-label="View ${name}">View</button>
-                    <button type="button" data-action="edit" data-id="${e.id}" aria-label="Edit ${name}">Edit</button>
-                    ${statusButton}
+                    ${(hasRole('HR_ADMIN') || hasRole('SYS_ADMIN')) ? `<button type="button" data-action="edit" data-id="${e.id}" aria-label="Edit ${name}">Edit</button>` : ''}
+                    ${(hasRole('HR_ADMIN') || hasRole('SYS_ADMIN')) ? statusButton : ''}
                 </td>
             </tr>
         `;
@@ -216,6 +236,7 @@ function handleRowAction(event) {
         case 'deactivate': handleDeactivate(id); break;
         case 'reactivate': handleReactivate(id); break;
     }
+
 }
 
 // Handle employee deactivation action

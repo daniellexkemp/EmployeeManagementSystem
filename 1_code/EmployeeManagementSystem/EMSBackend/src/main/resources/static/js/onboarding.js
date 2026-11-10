@@ -9,6 +9,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!(await requireAuth())) return;
     displayCurrentUser();
 
+    
+    try {
+        const employees = await apiRequest('/employees/supervisors');
+        const supervisorDropdown = document.getElementById('supervisorId');
+
+        employees.forEach(employee => {
+            const option = document.createElement('option');
+            option.value = employee.id;
+            option.textContent = `${employee.firstName} ${employee.lastName}`;
+            supervisorDropdown.appendChild(option);
+        });
+    } catch (err) {
+        console.error('Unable to load supervisors:', err);
+    }
+
+
+
+
+
+
     // Block the form for roles that can't create employees
     if (!(await canOnboard())) {
         showAccessDenied();
@@ -57,8 +77,15 @@ async function handleSubmit(event) {
     submitBtn.textContent = 'Saving...';
 
     try {
-        await EmployeeAPI.create({ ...values, employmentStatus: 'ACTIVE' });
+       const supervisorId = document.getElementById('supervisorId').value || null;
+
+await apiRequest(
+    `/employees${supervisorId ? '?supervisorId=' + encodeURIComponent(supervisorId) : ''}`,
+    'POST',
+    { ...values, employmentStatus: 'ACTIVE' }
+);
         showMessage(`${values.firstName} ${values.lastName} was added to the employee directory.`, 'success');
+
         document.getElementById('onboardingForm').reset();
     } catch (err) {
         showMessage(friendlyError(err), 'error');
