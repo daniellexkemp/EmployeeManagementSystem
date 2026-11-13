@@ -351,11 +351,13 @@ function renderViewMode(successMessage = '') {
 
     document.getElementById('modalFooter').innerHTML = `
         <button type="button" class="btn-secondary" id="modalCancelBtn">Close</button>
-        <button type="button" id="modalEditBtn">Edit</button>
-    `;
+        ${hasRole('HR_ADMIN') || hasRole('SYS_ADMIN')
+        ? '<button type="button" id="modalEditBtn">Edit</button>'
+         : ''}
+          `;
 
     document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
-    document.getElementById('modalEditBtn').addEventListener('click', () => renderEditMode());
+    document.getElementById('modalEditBtn')?.addEventListener('click', () => renderEditMode());
 }
 
 // Builds one labeled input with a spot for its error message

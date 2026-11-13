@@ -53,3 +53,6 @@ function hasRole(...allowedRoles) {
     return currentUser !== null &&
         allowedRoles.includes(currentUser.role);
 }
+// Connect the Logout button to the logout function.
+document.getElementById('logoutBtn')
+    ?.addEventListener('click', logout);
