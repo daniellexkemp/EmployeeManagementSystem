@@ -59,6 +59,8 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers("/api/auth/register")
                     .hasAnyAuthority("HR_ADMIN", "SYS_ADMIN")
+                .requestMatchers("/api/audit-log", "/api/audit-log/**")
+                    .hasAuthority("HR_ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions

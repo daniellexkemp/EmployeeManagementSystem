@@ -1,8 +1,10 @@
 
 package com.employeemanagement.controller;
 
+import com.employeemanagement.model.AuditAction;
 import com.employeemanagement.model.Users;
 import com.employeemanagement.repository.UserRepository;
+import com.employeemanagement.service.AuditService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,9 +23,14 @@ public class UserController {
             Set.of("EMPLOYEE", "MANAGER", "HR_ADMIN");
 
     private final UserRepository userRepository;
+    private final AuditService auditService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(
+            UserRepository userRepository,
+            AuditService auditService) {
+
         this.userRepository = userRepository;
+        this.auditService = auditService;
     }
 
     @GetMapping
@@ -82,8 +89,16 @@ public class UserController {
             ));
         }
 
+        String previousRole = user.getRole();
+
         user.setRole(role);
         userRepository.save(user);
+
+        auditService.record(
+                AuditAction.CHANGE_ROLE,
+                "User " + user.getUsername(),
+                previousRole + " -> " + role
+        );
 
         return ResponseEntity.ok(Map.of(
                 "message", "User role updated successfully",

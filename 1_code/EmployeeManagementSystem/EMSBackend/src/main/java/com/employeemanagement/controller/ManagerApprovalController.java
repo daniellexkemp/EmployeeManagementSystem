@@ -1,9 +1,11 @@
 
 package com.employeemanagement.controller;
 
+import com.employeemanagement.model.AuditAction;
 import com.employeemanagement.model.CurrentUser;
 import com.employeemanagement.model.DecisionRequest;
 import com.employeemanagement.model.TimeOffRequestResponse;
+import com.employeemanagement.service.AuditService;
 import com.employeemanagement.service.AuthService;
 import com.employeemanagement.service.ManagerApprovalService;
 
@@ -23,13 +25,16 @@ public class ManagerApprovalController {
 
     private final ManagerApprovalService service;
     private final AuthService authService;
+    private final AuditService auditService;
 
     public ManagerApprovalController(
             ManagerApprovalService service,
-            AuthService authService) {
+            AuthService authService,
+            AuditService auditService) {
 
         this.service = service;
         this.authService = authService;
+        this.auditService = auditService;
     }
 
     private CurrentUser currentUser(
@@ -116,8 +121,18 @@ public class ManagerApprovalController {
                 status,
                 currentUser(authentication),
                 decision.decisionNote()
-        ).map(ResponseEntity::ok)
-         .orElse(ResponseEntity.notFound().build());
+        ).map(response -> {
+            auditService.record(
+                    "APPROVED".equals(status)
+                            ? AuditAction.APPROVE_TIMEOFF
+                            : AuditAction.DENY_TIMEOFF,
+                    "Time-off request #" + id
+                            + " (" + response.employeeName() + ")",
+                    decision.decisionNote()
+            );
+
+            return ResponseEntity.ok(response);
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler({
