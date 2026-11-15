@@ -45,8 +45,6 @@ The current implementation supports:
 - Audit log of sign-ins and record changes, viewable by HR administrators only
 - Persistence of all records in MySQL
 
-See [Known Limitations](#14-known-limitations) for functionality that is partially implemented or deferred.
-
 ## Project Scope
 
 The implementation focuses on employee records, onboarding, employee self-service, time-off workflows, reporting, auditing, and role-based access.
