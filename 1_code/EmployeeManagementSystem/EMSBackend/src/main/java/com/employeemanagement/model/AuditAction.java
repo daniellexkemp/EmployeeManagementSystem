@@ -1,0 +1,18 @@
+package com.employeemanagement.model;
+
+public enum AuditAction {
+    LOGIN,
+    LOGIN_FAILED,
+    LOGOUT,
+    REGISTER_USER,
+    CHANGE_PASSWORD,
+    CHANGE_ROLE,
+    CREATE_EMPLOYEE,
+    UPDATE_EMPLOYEE,
+    UPDATE_CONTACT,
+    DEACTIVATE_EMPLOYEE,
+    REACTIVATE_EMPLOYEE,
+    SUBMIT_TIMEOFF,
+    APPROVE_TIMEOFF,
+    DENY_TIMEOFF
+}

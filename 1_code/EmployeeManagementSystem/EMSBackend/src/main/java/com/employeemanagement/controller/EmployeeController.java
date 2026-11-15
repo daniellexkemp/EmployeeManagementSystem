@@ -1,8 +1,10 @@
 package com.employeemanagement.controller;
 
+import com.employeemanagement.model.AuditAction;
 import com.employeemanagement.model.ContactUpdateRequest;
 import com.employeemanagement.model.CurrentUser;
 import com.employeemanagement.model.Employee;
+import com.employeemanagement.service.AuditService;
 import com.employeemanagement.service.AuthService;
 import com.employeemanagement.service.EmployeeService;
 
@@ -25,13 +27,16 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final AuthService authService;
+    private final AuditService auditService;
 
     public EmployeeController(
             EmployeeService employeeService,
-            AuthService authService) {
+            AuthService authService,
+            AuditService auditService) {
 
         this.employeeService = employeeService;
         this.authService = authService;
+        this.auditService = auditService;
     }
 
     private CurrentUser currentUser(Authentication authentication) {
@@ -170,6 +175,12 @@ return employeeService.getEmployeeById(id)
                             request.phone()
                     );
 
+            auditService.record(
+                    AuditAction.UPDATE_CONTACT,
+                    AuditService.describeEmployee(updated),
+                    "Email and phone updated"
+            );
+
             return ResponseEntity.ok(updated);
 
         } catch (IllegalArgumentException e) {
@@ -185,6 +196,14 @@ return employeeService.getEmployeeById(id)
 
         Employee saved = employeeService.createEmployee(employee, supervisorId);
 
+        auditService.record(
+                AuditAction.CREATE_EMPLOYEE,
+                AuditService.describeEmployee(saved),
+                supervisorId == null
+                        ? null
+                        : "Supervisor: Employee #" + supervisorId
+        );
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(saved);
@@ -197,9 +216,15 @@ return employeeService.getEmployeeById(id)
             @RequestBody Employee employee) {
 
         try {
-            return ResponseEntity.ok(
-                    employeeService.updateEmployee(id, employee)
+            Employee updated = employeeService.updateEmployee(id, employee);
+
+            auditService.record(
+                    AuditAction.UPDATE_EMPLOYEE,
+                    AuditService.describeEmployee(updated),
+                    "Status: " + updated.getEmploymentStatus()
             );
+
+            return ResponseEntity.ok(updated);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -212,9 +237,15 @@ return employeeService.getEmployeeById(id)
             @PathVariable Long id) {
 
         try {
-            return ResponseEntity.ok(
-                    employeeService.deactivateEmployee(id)
+            Employee updated = employeeService.deactivateEmployee(id);
+
+            auditService.record(
+                    AuditAction.DEACTIVATE_EMPLOYEE,
+                    AuditService.describeEmployee(updated),
+                    null
             );
+
+            return ResponseEntity.ok(updated);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -227,9 +258,15 @@ return employeeService.getEmployeeById(id)
             @PathVariable Long id) {
 
         try {
-            return ResponseEntity.ok(
-                    employeeService.reactivateEmployee(id)
+            Employee updated = employeeService.reactivateEmployee(id);
+
+            auditService.record(
+                    AuditAction.REACTIVATE_EMPLOYEE,
+                    AuditService.describeEmployee(updated),
+                    null
             );
+
+            return ResponseEntity.ok(updated);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

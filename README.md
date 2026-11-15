@@ -40,6 +40,7 @@ The current implementation supports:
 - Manager review and approval or denial of time-off requests
 - Persistence of employee and time-off records in MySQL
 - Administrative user-access management
+- Audit log of sign-ins and record changes, viewable by HR administrators only
 
 Additional functionality described in earlier project requirements may remain planned or partially implemented.
 
@@ -313,6 +314,16 @@ These accounts are included in `EMSBackend/database/ems_db_demo_seed.sql`.
 **Expected result:** The employee submits a request, the authorized manager approves it, and the employee can see the updated status after signing in again.
 
 This workflow demonstrates communication between the frontend, Spring Boot backend, and MySQL database, as well as the integration of employee and manager roles.
+
+### Audit Log (HR administrators only)
+
+The system records sign-ins, failed sign-ins, sign-outs, password and role changes, employee record changes, and time-off submissions and decisions in the `audit_log` table. Spring Boot creates the table automatically on first start.
+
+1. Sign in using the HR administrator demonstration account.
+2. Open **Audit Log** from the navigation bar or the dashboard.
+3. Filter by username, action, or date range, page through results, or export the matching entries to CSV.
+
+Only the `HR_ADMIN` role can open the page or call `GET /api/audit-log`. Other roles do not see the link, and the API returns `403 Forbidden`. Audit entries cannot be edited or deleted through the application.
 
 ## 9. Reproducibility Verification
 

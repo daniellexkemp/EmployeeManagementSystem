@@ -5,6 +5,7 @@ import com.employeemanagement.config.SecurityConfig;
 import com.employeemanagement.controller.TimeOffController;
 import com.employeemanagement.model.Users;
 import com.employeemanagement.repository.UserRepository;
+import com.employeemanagement.service.AuditService;
 import com.employeemanagement.service.AuthService;
 import com.employeemanagement.service.TimeOffService;
 
@@ -41,6 +42,9 @@ class TimeOffReportControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private AuditService auditService;
 
     @MockitoBean
     private UserRepository userRepository;

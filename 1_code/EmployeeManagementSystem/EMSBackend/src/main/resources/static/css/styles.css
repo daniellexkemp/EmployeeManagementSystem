@@ -86,6 +86,7 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="number"],
+input[type="date"],
 select,
 textarea {
   padding: 8px 12px;
@@ -622,4 +623,13 @@ body.modal-open {
 
 .logout-btn:hover {
   background: #a33025;
+}
+
+#pagingControls {
+  margin-top: 16px;
+}
+
+#pagingControls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
