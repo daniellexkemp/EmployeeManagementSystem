@@ -1,9 +1,11 @@
 
 package com.employeemanagement.controller;
 
+import com.employeemanagement.model.AuditAction;
 import com.employeemanagement.model.CurrentUser;
 import com.employeemanagement.model.LoginRequest;
 import com.employeemanagement.model.Users;
+import com.employeemanagement.service.AuditService;
 import com.employeemanagement.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,15 +31,18 @@ public class AuthController {
     private final AuthService authService;
     private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
     private final SecurityContextRepository securityContextRepository;
+    private final AuditService auditService;
 
     public AuthController(
             AuthService authService,
             SessionAuthenticationStrategy sessionAuthenticationStrategy,
-            SecurityContextRepository securityContextRepository) {
+            SecurityContextRepository securityContextRepository,
+            AuditService auditService) {
 
         this.authService = authService;
         this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
         this.securityContextRepository = securityContextRepository;
+        this.auditService = auditService;
     }
 
     @PostMapping("/login")
@@ -49,6 +54,14 @@ public class AuthController {
         CurrentUser user = authService.authenticate(request);
 
         if (user == null) {
+            auditService.recordAs(
+                    request == null ? null : request.username(),
+                    null,
+                    AuditAction.LOGIN_FAILED,
+                    null,
+                    "Invalid username or password"
+            );
+
             return ResponseEntity.status(401).body(Map.of(
                     "error", "Invalid username or password"
             ));
@@ -80,6 +93,14 @@ public class AuthController {
                 httpResponse
         );
 
+        auditService.recordAs(
+                user.username(),
+                user.role(),
+                AuditAction.LOGIN,
+                null,
+                null
+        );
+
         return ResponseEntity.ok(user);
     }
 
@@ -104,6 +125,12 @@ public class AuthController {
                     username,
                     password,
                     employeeId
+            );
+
+            auditService.record(
+                    AuditAction.REGISTER_USER,
+                    "User " + user.getUsername(),
+                    "Linked to Employee #" + employeeId
             );
 
             return ResponseEntity.status(201).body(Map.of(
@@ -143,6 +170,12 @@ public class AuthController {
                     newPassword
             );
 
+            auditService.record(
+                    AuditAction.CHANGE_PASSWORD,
+                    "User " + username,
+                    null
+            );
+
             return ResponseEntity.ok(Map.of(
                     "message", "Password changed successfully"
             ));
@@ -179,7 +212,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Authentication authentication) {
+
+        if (authentication != null) {
+            auditService.record(AuditAction.LOGOUT, null, null);
+        }
 
         if (request.getSession(false) != null) {
             request.getSession(false).invalidate();

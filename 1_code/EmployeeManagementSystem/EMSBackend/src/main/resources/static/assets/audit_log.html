@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - Audit Log</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<div class="header">
+    <strong>Employee Management System</strong>
+    <div class="header-user">
+        <span id="currentUser"></span>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="employees.html">Employee Directory</a>
+    <a href="timeoff_employee.html">Time-Off Requests</a>
+    <a href="manager_approvals.html">Manager Approvals</a>
+    <a href="timeoff_report.html" id="timeOffReportLink" hidden>Time-Off Report</a>
+    <a href="onboarding.html">Onboarding</a>
+    <a href="user_access.html">User Access</a>
+    <a href="audit_log.html" id="auditLogLink" class="active" hidden>Audit Log</a>
+    <a href="profile.html">Profile</a>
+</nav>
+
+<main>
+    <div class="container">
+        <h1>AUDIT LOG</h1>
+
+        <div class="filters">
+            <input
+                type="text"
+                id="actorInput"
+                placeholder="Search by username..."
+                aria-label="Username"
+            >
+
+            <select id="actionFilter" aria-label="Action">
+                <option value="">All Actions</option>
+            </select>
+
+            <input type="date" id="fromDate" aria-label="From date" title="From date">
+            <input type="date" id="toDate" aria-label="To date" title="To date">
+
+            <button type="button" id="filterBtn">Filter</button>
+            <button type="button" id="resetBtn">Reset</button>
+            <button type="button" id="exportBtn">Export CSV</button>
+        </div>
+
+        <p id="auditMessage" role="status" aria-live="polite"></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date / Time</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="auditTableBody"></tbody>
+        </table>
+
+        <div class="filters" id="pagingControls">
+            <button type="button" id="prevPageBtn">Previous</button>
+            <span id="pageInfo"></span>
+            <button type="button" id="nextPageBtn">Next</button>
+        </div>
+    </div>
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/audit_log.js"></script>
+
+</body>
+</html>

@@ -14,6 +14,7 @@ async function requireAuth() {
         currentUser = await AuthAPI.currentUser();
 
         displayCurrentUser();
+        showAuditLogNavigation();
         return true;
     } catch (error) {
         currentUser = null;
@@ -53,6 +54,18 @@ function hasRole(...allowedRoles) {
     return currentUser !== null &&
         allowedRoles.includes(currentUser.role);
 }
+function showAuditLogNavigation() {
+    const isHrAdmin = hasRole('HR_ADMIN');
+
+    ['auditLogLink', 'auditLogCard'].forEach(id => {
+        const el = document.getElementById(id);
+
+        if (el) {
+            el.hidden = !isHrAdmin;
+        }
+    });
+}
+
 // Connect the Logout button to the logout function.
 document.getElementById('logoutBtn')
     ?.addEventListener('click', logout);

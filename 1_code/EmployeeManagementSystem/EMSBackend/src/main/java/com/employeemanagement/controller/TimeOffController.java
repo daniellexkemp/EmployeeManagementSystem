@@ -1,9 +1,11 @@
 
 package com.employeemanagement.controller;
 
+import com.employeemanagement.model.AuditAction;
 import com.employeemanagement.model.CurrentUser;
 import com.employeemanagement.model.TimeOffRequestResponse;
 import com.employeemanagement.model.TimeOffSubmissionRequest;
+import com.employeemanagement.service.AuditService;
 import com.employeemanagement.service.AuthService;
 import com.employeemanagement.service.TimeOffService;
 
@@ -22,13 +24,16 @@ public class TimeOffController {
 
     private final TimeOffService service;
     private final AuthService authService;
+    private final AuditService auditService;
 
     public TimeOffController(
             TimeOffService service,
-            AuthService authService) {
+            AuthService authService,
+            AuditService auditService) {
 
         this.service = service;
         this.authService = authService;
+        this.auditService = auditService;
     }
 
     private Long getAuthenticatedEmployeeId(
@@ -66,6 +71,13 @@ public class TimeOffController {
                 request.startDate(),
                 request.endDate(),
                 request.reason()
+        );
+
+        auditService.record(
+                AuditAction.SUBMIT_TIMEOFF,
+                "Time-off request #" + response.id(),
+                response.leaveType() + ", "
+                        + response.startDate() + " to " + response.endDate()
         );
 
         return ResponseEntity
