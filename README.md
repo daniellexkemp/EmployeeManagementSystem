@@ -98,8 +98,6 @@ Open the cloned repository in your development environment and navigate to:
 1_code/EmployeeManagementSystem/EMSBackend
 ```
 
-For grading, check out the exact Git commit identified in the submitted assignment documentation.
-
 ## 2. Prepare the MySQL Database
 
 Start MySQL Server and confirm that you can connect to it.
@@ -194,8 +192,6 @@ DB_PASSWORD=your_mysql_password
 ```
 
 Replace the username and password with credentials for your own MySQL installation. The MySQL user needs permission to create tables and alter them in the selected database, because the application creates the `audit_log` table on first start.
-
-**Important:** Do not commit `.env` files containing real credentials to GitHub.
 
 ### Using a separate test database
 
@@ -426,19 +422,6 @@ Check that the seed was imported into the same schema the application is using. 
 ### Audit Log link does not appear
 
 The Audit Log is available only to the `HR_ADMIN` role. Sign in as `testadmin`.
-
-## 13. Assignment 8 Evaluation
-
-Assignment 8 (System Integration and Implementation Milestone) can be evaluated with Workflows 1–3 and the automated tests above. The submitted Git commit hash and additional evaluation details are provided in the Assignment 8 semester project documentation.
-
-## 14. Known Limitations
-
-- Time-off requests are routed to managers by department rather than by the assigned supervisor.
-- A supervisor can be assigned during onboarding but not yet changed afterward.
-- Managers can view their assigned employees but cannot yet generate reports.
-- Onboarding task and status tracking is deferred.
-- Performance and scalability targets have not yet been measured.
-- Audit entries record a summary of each change rather than full before-and-after values.
 
 ## Security and Data Notice
 
