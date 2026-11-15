@@ -33,7 +33,7 @@ The current implementation supports:
 
 - User authentication and sign-out
 - Role-based access for employees, managers, and HR administrators, enforced on both the pages and the backend
-- Employee onboarding, including optional supervisor assignment
+- Employee onboarding, including optional manager assignment
 - Employee Directory with search, department and status filters, and CSV export
 - HR administrator viewing, editing, deactivation, and reactivation of employee records
 - Read-only directory view of assigned employees for managers
@@ -159,9 +159,11 @@ These counts describe the initial demonstration data. They change as the applica
 The seed was created before some features were added. On the first start, Spring Boot (Hibernate) automatically:
 
 - creates the `audit_log` table
-- adds the `employee.manager_id` column used for supervisor assignments
+- adds the `employee.manager_id` column used for manager assignments
 
 No manual schema changes are required.
+
+Because `manager_id` is added after the seed is imported, the demonstration employees start with no assigned manager. A manager's Employee Directory therefore appears empty until an employee is assigned to them. Workflow 1 assigns a new employee to Morgan Manager so the manager view can be demonstrated.
 
 ## 3. Configure Database Connectivity
 
@@ -271,15 +273,17 @@ To sign in, open `http://localhost:8080/assets/login.html`, enter one of the use
 
 1. Sign in as `testadmin` (Taylor Admin).
 2. Open **Onboarding**.
-3. Create a new fictional employee using the required form fields, and optionally select a supervisor.
+3. Create a new fictional employee using the required form fields, and optionally select a manager.
 4. Submit the form and confirm the successful onboarding message.
 5. Open the **Employee Directory** and locate the new employee.
 6. Select **Edit**, change a field such as the job title, and save.
 7. Refresh the page and confirm the employee and the edited value remain.
 8. Open **Profile**, update an editable contact field such as the phone number, and save.
 9. Refresh the profile and confirm the updated value persists.
+10. Sign out and sign in as `testmanager` (Morgan Manager).
+11. Open the **Employee Directory** and confirm the new employee appears with **View** only, and no Edit or Deactivate buttons.
 
-**Expected result:** The new employee appears in the directory, the edit is saved, and the administrator's contact change remains visible after refreshing.
+**Expected result:** The new employee appears in the directory, the edit is saved, the administrator's contact change remains visible after refreshing, and Morgan Manager sees the new employee in a read-only directory.
 
 **Note:** Creating a new employee does not automatically create a login account for that employee.
 
