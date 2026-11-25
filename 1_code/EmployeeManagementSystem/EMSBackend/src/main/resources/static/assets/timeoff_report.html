@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +7,12 @@
     <title>HR - Time-Off Report</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
+<body class="timeoff-report-page">
 
 <!-- Top Header Bar -->
 <div class="header">
     <strong>Employee Management System</strong>
-    <div style="display:flex; align-items:center; gap:16px;">
+    <div class="header-user">
         <span id="currentUser"></span>
         <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
@@ -23,7 +24,11 @@
     <a href="employees.html">Employee Directory</a>
     <a href="timeoff_employee.html">Time-Off Requests</a>
     <a href="manager_approvals.html">Manager Approvals</a>
-    <a href="timeoff_report.html" class="active">Time-Off Report</a>
+    <a href="timeoff_report.html"
+       id="timeOffReportLink"
+       class="active"
+       aria-current="page"
+       hidden>Time-Off Report</a>
     <a href="onboarding.html">Onboarding</a>
     <a href="user_access.html">User Access</a>
     <a href="audit_log.html" id="auditLogLink" hidden>Audit Log</a>
@@ -35,48 +40,123 @@
     <div class="container">
         <h1>TIME-OFF REPORT</h1>
 
-        <!-- Search and Filter Controls -->
-        <div class="filters">
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Search by employee name..."
-            >
-
-            <select id="leaveTypeFilter">
-                <option value="">All Leave Types</option>
-            </select>
-
-            <select id="statusFilter">
-                <option value="">All Statuses</option>
-                <option value="PENDING">Pending</option>
-                <option value="APPROVED">Approved</option>
-                <option value="DENIED">Denied</option>
-            </select>
-
-            <button type="button" id="filterBtn">Filter</button>
-            <button type="button" id="resetBtn">Reset</button>
-            <button type="button" id="exportBtn">Export CSV</button>
-        </div>
-
         <p id="reportMessage" role="status" aria-live="polite"></p>
 
-        <!-- Time-Off Report Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Request ID</th>
-                    <th>Employee</th>
-                    <th>Leave Type</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Days Requested</th>
-                    <th>Status</th>
-                    <th>Submitted</th>
-                </tr>
-            </thead>
-            <tbody id="reportTableBody"></tbody>
-        </table>
+        <!-- HR-Only Report Content -->
+        <div id="reportContent" hidden>
+
+            <p class="report-description">
+                View, filter, and export employee time-off records.
+            </p>
+
+            <!-- Search and Filter Controls -->
+            <section class="report-filter-panel"
+                     aria-labelledby="filterHeading">
+
+                <h2 id="filterHeading">Filter Time-Off Requests</h2>
+
+                <p id="filterInstructions" class="report-instructions">
+                    Use one or more filters to narrow the report.
+                    Results update automatically as you change your
+                    selections. Export CSV downloads only the
+                    matching records.
+                </p>
+
+                <div class="filters report-filter-fields">
+
+                    <div class="report-filter-field">
+                        <label for="searchInput">Employee Name</label>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Enter employee name..."
+                            aria-describedby="filterInstructions"
+                        >
+                    </div>
+
+                    <div class="report-filter-field">
+                        <label for="leaveTypeFilter">Leave Type</label>
+                        <select id="leaveTypeFilter">
+                            <option value="">All Leave Types</option>
+                        </select>
+                    </div>
+
+                    <div class="report-filter-field">
+                        <label for="statusFilter">Request Status</label>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="DENIED">Denied</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Report Actions -->
+                <div class="report-actions">
+                    <button type="button" id="filterBtn">
+                        Apply Filters
+                    </button>
+
+                    <button type="button"
+                            id="resetBtn"
+                            class="report-secondary-btn">
+                        Reset
+                    </button>
+
+                    <button type="button"
+                            id="exportBtn"
+                            aria-describedby="exportMessage"
+                            disabled>
+                        Export CSV
+                    </button>
+                </div>
+
+                <p id="exportMessage"
+                   class="report-export-message"
+                   role="status"
+                   aria-live="polite"></p>
+
+            </section>
+
+            <!-- Report Results -->
+            <section class="report-results"
+                     aria-labelledby="resultsHeading">
+
+                <h2 id="resultsHeading">Report Results</h2>
+
+                <p id="resultsMessage"
+                   role="status"
+                   aria-live="polite"></p>
+
+                <div class="report-table-wrapper">
+                    <table aria-labelledby="resultsHeading">
+                        <thead>
+                            <tr>
+                                <th scope="col">Request ID</th>
+                                <th scope="col">Employee</th>
+                                <th scope="col">Leave Type</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col">Days Requested</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody"></tbody>
+                    </table>
+                </div>
+
+                <p class="report-timestamp-note">
+                    Submitted timestamps are displayed without fractional
+                    seconds for readability. CSV exports retain the
+                    original timestamp precision.
+                </p>
+
+            </section>
+
+        </div>
     </div>
 </main>
 
