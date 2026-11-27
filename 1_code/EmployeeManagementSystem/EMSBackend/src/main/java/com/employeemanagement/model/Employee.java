@@ -24,17 +24,24 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name is required.")
     private String firstName;
+    @NotBlank(message = "Last name is required.")
     private String lastName;
+    @NotBlank(message = "Email is required.")
+    @Email(message = "Email must be in a valid format.")
     private String email;
+    @NotBlank(message = "Phone number is required.")
     private String phone;
+    @NotBlank(message = "Deparmtent is required.")
     private String department;
+    @NotBlank(message = "Job title is required.")
     private String jobTitle;
     private String employmentStatus; // "ACTIVE", "DEACTIVATED", "ONBOARDING"
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "manager_id")
-@JsonIgnore
-private Employee manager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    @JsonIgnore
+    private Employee manager;
 
     public Employee() {}
 

@@ -60,6 +60,7 @@ public class EmployeeController {
     }
 
 @GetMapping
+@PreAuthorize("hasAnyAuthority('HR_ADMIN, 'SYS_ADMIN', 'MANAGER')")
 public List<Employee> getAll(
         @RequestParam(required = false) String search,
         Authentication authentication) {
@@ -103,6 +104,7 @@ public List<Employee> getSupervisor() {
     return employeeService.getEligibleSupervisors();
 }
   @GetMapping("/{id}")
+  @PreAuthorize("hasAnyAuthority('HR_ADMIN, 'SYS_ADMIN', 'MANAGER')")
 public ResponseEntity<Employee> getById(
         @PathVariable Long id,
         Authentication authentication) {
@@ -213,7 +215,7 @@ return employeeService.getEmployeeById(id)
     @PreAuthorize("hasAnyAuthority('HR_ADMIN', 'SYS_ADMIN')")
     public ResponseEntity<Employee> update(
             @PathVariable Long id,
-            @RequestBody Employee employee) {
+            @Valid @RequestBody Employee employee) {
 
         try {
             Employee updated = employeeService.updateEmployee(id, employee);
